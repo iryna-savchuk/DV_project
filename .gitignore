@@ -17,6 +17,7 @@ venv.bak/
 
 # Misc
 .DS_Store
+iframe_figures/
 
 # Directories with datasets
 datasets/
