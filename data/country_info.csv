@@ -1,0 +1,219 @@
+﻿country,country_code,region,incomeID,income,population
+Afghanistan,AFG,South Asia,LIC,Low income,24726684
+Albania,ALB,Europe & Central Asia,UMC,Upper middle income,3026939
+Algeria,DZA,Middle East & North Africa,LMC,Lower middle income,32692163
+American Samoa,ASM,East Asia & Pacific,UMC,Upper middle income,59681
+Andorra,AND,Europe & Central Asia,HIC,High income,76244
+Angola,AGO,Sub-Saharan Africa ,LMC,Lower middle income,18758145
+Antigua and Barbuda,ATG,Latin America & Caribbean ,HIC,High income,80336
+Argentina,ARG,Latin America & Caribbean ,UMC,Upper middle income,38491972
+Armenia,ARM,Europe & Central Asia,UMC,Upper middle income,3000720
+Aruba,ABW,Latin America & Caribbean ,HIC,High income,98737
+Australia,AUS,East Asia & Pacific,HIC,High income,20127400
+Austria,AUT,Europe & Central Asia,HIC,High income,8171966
+Azerbaijan,AZE,Europe & Central Asia,UMC,Upper middle income,8306500
+"Bahamas, The",BHS,Latin America & Caribbean ,HIC,High income,318894
+Bahrain,BHR,Middle East & North Africa,HIC,High income,829844
+Bangladesh,BGD,South Asia,LMC,Lower middle income,136986432
+Barbados,BRB,Latin America & Caribbean ,HIC,High income,275284
+Belarus,BLR,Europe & Central Asia,UMC,Upper middle income,9730146
+Belgium,BEL,Europe & Central Asia,HIC,High income,10421137
+Belize,BLZ,Latin America & Caribbean ,UMC,Upper middle income,276504
+Benin,BEN,Sub-Saharan Africa ,LMC,Lower middle income,7750004
+Bermuda,BMU,North America,HIC,High income,63740
+Bhutan,BTN,South Asia,LMC,Lower middle income,638815
+Bolivia,BOL,Latin America & Caribbean ,LMC,Lower middle income,9069039
+Bosnia and Herzegovina,BIH,Europe & Central Asia,UMC,Upper middle income,3764194
+Botswana,BWA,Sub-Saharan Africa ,UMC,Upper middle income,1765527
+Brazil,BRA,Latin America & Caribbean ,UMC,Upper middle income,184006481
+British Virgin Islands,VGB,Latin America & Caribbean ,HIC,High income,22334
+Brunei Darussalam,BRN,East Asia & Pacific,HIC,High income,359433
+Bulgaria,BGR,Europe & Central Asia,UMC,Upper middle income,7716860
+Burkina Faso,BFA,Sub-Saharan Africa ,LIC,Low income,13030569
+Burundi,BDI,Sub-Saharan Africa ,LIC,Low income,7131693
+Cabo Verde,CPV,Sub-Saharan Africa ,LMC,Lower middle income,456617
+Cambodia,KHM,East Asia & Pacific,LMC,Lower middle income,13066469
+Cameroon,CMR,Sub-Saharan Africa ,LMC,Lower middle income,17259322
+Canada,CAN,North America,HIC,High income,31940655
+Cayman Islands,CYM,Latin America & Caribbean ,HIC,High income,47902
+Central African Republic,CAF,Sub-Saharan Africa ,LIC,Low income,3959875
+Chad,TCD,Sub-Saharan Africa ,LIC,Low income,9734767
+Channel Islands,CHI,Europe & Central Asia,HIC,High income,150716
+Chile,CHL,Latin America & Caribbean ,HIC,High income,16014971
+China,CHN,East Asia & Pacific,UMC,Upper middle income,1296075000
+Colombia,COL,Latin America & Caribbean ,UMC,Upper middle income,42075953
+Comoros,COM,Sub-Saharan Africa ,LMC,Lower middle income,597228
+"Congo, Dem. Rep.",COD,Sub-Saharan Africa ,LIC,Low income,53068880
+"Congo, Rep.",COG,Sub-Saharan Africa ,LMC,Lower middle income,3510468
+Costa Rica,CRI,Latin America & Caribbean ,UMC,Upper middle income,4225155
+Cote d'Ivoire,CIV,Sub-Saharan Africa ,LMC,Lower middle income,17970494
+Croatia,HRV,Europe & Central Asia,HIC,High income,4304600
+Cuba,CUB,Latin America & Caribbean ,UMC,Upper middle income,11250365
+Curacao,CUW,Latin America & Caribbean ,HIC,High income,134192
+Cyprus,CYP,Europe & Central Asia,HIC,High income,1010408
+Czech Republic,CZE,Europe & Central Asia,HIC,High income,10197101
+Denmark,DNK,Europe & Central Asia,HIC,High income,5404523
+Djibouti,DJI,Middle East & North Africa,LMC,Lower middle income,771603
+Dominica,DMA,Latin America & Caribbean ,UMC,Upper middle income,70382
+Dominican Republic,DOM,Latin America & Caribbean ,UMC,Upper middle income,8974444
+Ecuador,ECU,Latin America & Caribbean ,UMC,Upper middle income,13596388
+"Egypt, Arab Rep.",EGY,Middle East & North Africa,LMC,Lower middle income,74172073
+El Salvador,SLV,Latin America & Caribbean ,LMC,Lower middle income,6023797
+Equatorial Guinea,GNQ,Sub-Saharan Africa ,UMC,Upper middle income,716949
+Eritrea,ERI,Sub-Saharan Africa ,LIC,Low income,2719803
+Estonia,EST,Europe & Central Asia,HIC,High income,1362550
+Eswatini,SWZ,Sub-Saharan Africa ,LMC,Lower middle income,1026286
+Ethiopia,ETH,Sub-Saharan Africa ,LIC,Low income,74239505
+Faroe Islands,FRO,Europe & Central Asia,HIC,High income,47600
+Fiji,FJI,East Asia & Pacific,UMC,Upper middle income,817860
+Finland,FIN,Europe & Central Asia,HIC,High income,5228172
+France,FRA,Europe & Central Asia,HIC,High income,62704895
+French Polynesia,PYF,East Asia & Pacific,HIC,High income,255992
+Gabon,GAB,Sub-Saharan Africa ,UMC,Upper middle income,1353795
+"Gambia, The",GMB,Sub-Saharan Africa ,LIC,Low income,1496527
+Georgia,GEO,Europe & Central Asia,UMC,Upper middle income,3927340
+Germany,DEU,Europe & Central Asia,HIC,High income,82516260
+Ghana,GHA,Sub-Saharan Africa ,LMC,Lower middle income,21272323
+Gibraltar,GIB,Europe & Central Asia,HIC,High income,32928
+Greece,GRC,Europe & Central Asia,HIC,High income,10955141
+Greenland,GRL,Europe & Central Asia,HIC,High income,56911
+Grenada,GRD,Latin America & Caribbean ,UMC,Upper middle income,104347
+Guam,GUM,East Asia & Pacific,HIC,High income,158101
+Guatemala,GTM,Latin America & Caribbean ,UMC,Upper middle income,12682108
+Guinea,GIN,Sub-Saharan Africa ,LIC,Low income,8925743
+Guinea-Bissau,GNB,Sub-Saharan Africa ,LIC,Low income,1313492
+Guyana,GUY,Latin America & Caribbean ,UMC,Upper middle income,745737
+Haiti,HTI,Latin America & Caribbean ,LIC,Low income,9047077
+Honduras,HND,Latin America & Caribbean ,LMC,Lower middle income,7282953
+"Hong Kong SAR, China",HKG,East Asia & Pacific,HIC,High income,6783500
+Hungary,HUN,Europe & Central Asia,HIC,High income,10107146
+Iceland,ISL,Europe & Central Asia,HIC,High income,292074
+India,IND,South Asia,LMC,Lower middle income,1129623456
+Indonesia,IDN,East Asia & Pacific,UMC,Upper middle income,223285676
+"Iran, Islamic Rep.",IRN,Middle East & North Africa,UMC,Upper middle income,68951281
+Iraq,IRQ,Middle East & North Africa,UMC,Upper middle income,26313838
+Ireland,IRL,Europe & Central Asia,HIC,High income,4070262
+Isle of Man,IMN,Europe & Central Asia,HIC,High income,79520
+Israel,ISR,Middle East & North Africa,HIC,High income,6809000
+Italy,ITA,Europe & Central Asia,HIC,High income,57685327
+Jamaica,JAM,Latin America & Caribbean ,UMC,Upper middle income,2725015
+Japan,JPN,East Asia & Pacific,HIC,High income,127761000
+Jordan,JOR,Middle East & North Africa,UMC,Upper middle income,5580244
+Kazakhstan,KAZ,Europe & Central Asia,UMC,Upper middle income,15012985
+Kenya,KEN,Sub-Saharan Africa ,LMC,Lower middle income,35635271
+Kiribati,KIR,East Asia & Pacific,LMC,Lower middle income,90499
+"Korea, Dem. People’s Rep.",PRK,East Asia & Pacific,LIC,Low income,23732731
+"Korea, Rep.",KOR,East Asia & Pacific,HIC,High income,48082519
+Kosovo,XKX,Europe & Central Asia,UMC,Upper middle income,1704622
+Kuwait,KWT,Middle East & North Africa,HIC,High income,2200492
+Kyrgyz Republic,KGZ,Europe & Central Asia,LMC,Lower middle income,5104700
+Lao PDR,LAO,East Asia & Pacific,LMC,Lower middle income,5662208
+Latvia,LVA,Europe & Central Asia,HIC,High income,2263122
+Lebanon,LBN,Middle East & North Africa,UMC,Upper middle income,4569378
+Lesotho,LSO,Sub-Saharan Africa ,LMC,Lower middle income,2005940
+Liberia,LBR,Sub-Saharan Africa ,LIC,Low income,3135651
+Libya,LBY,Middle East & North Africa,UMC,Upper middle income,5710154
+Liechtenstein,LIE,Europe & Central Asia,HIC,High income,34452
+Lithuania,LTU,Europe & Central Asia,HIC,High income,3377075
+Luxembourg,LUX,Europe & Central Asia,HIC,High income,458095
+"Macao SAR, China",MAC,East Asia & Pacific,HIC,High income,471597
+Madagascar,MDG,Sub-Saharan Africa ,LIC,Low income,17802997
+Malawi,MWI,Sub-Saharan Africa ,LIC,Low income,12301838
+Malaysia,MYS,East Asia & Pacific,UMC,Upper middle income,25190652
+Maldives,MDV,South Asia,UMC,Upper middle income,311265
+Mali,MLI,Sub-Saharan Africa ,LIC,Low income,12369070
+Malta,MLT,Middle East & North Africa,HIC,High income,401268
+Marshall Islands,MHL,East Asia & Pacific,UMC,Upper middle income,54476
+Mauritania,MRT,Sub-Saharan Africa ,LMC,Lower middle income,2939247
+Mauritius,MUS,Sub-Saharan Africa ,HIC,High income,1221003
+Mexico,MEX,Latin America & Caribbean ,UMC,Upper middle income,104514932
+"Micronesia, Fed. Sts.",FSM,East Asia & Pacific,LMC,Lower middle income,106625
+Moldova,MDA,Europe & Central Asia,LMC,Lower middle income,2895147
+Monaco,MCO,Europe & Central Asia,HIC,High income,33500
+Mongolia,MNG,East Asia & Pacific,LMC,Lower middle income,2496391
+Montenegro,MNE,Europe & Central Asia,UMC,Upper middle income,613353
+Morocco,MAR,Middle East & North Africa,LMC,Lower middle income,30115214
+Mozambique,MOZ,Sub-Saharan Africa ,LIC,Low income,19910552
+Myanmar,MMR,East Asia & Pacific,LMC,Lower middle income,48564484
+Namibia,NAM,Sub-Saharan Africa ,UMC,Upper middle income,1907745
+Nauru,NRU,East Asia & Pacific,HIC,High income,9902
+Nepal,NPL,South Asia,LMC,Lower middle income,25419344
+Netherlands,NLD,Europe & Central Asia,HIC,High income,16281779
+New Caledonia,NCL,East Asia & Pacific,HIC,High income,228750
+New Zealand,NZL,East Asia & Pacific,HIC,High income,4087500
+Nicaragua,NIC,Latin America & Caribbean ,LMC,Lower middle income,5364935
+Niger,NER,Sub-Saharan Africa ,LIC,Low income,13125916
+Nigeria,NGA,Sub-Saharan Africa ,LMC,Lower middle income,135320422
+North Macedonia,MKD,Europe & Central Asia,UMC,Upper middle income,2057048
+Northern Mariana Islands,MNP,East Asia & Pacific,HIC,High income,57246
+Norway,NOR,Europe & Central Asia,HIC,High income,4591910
+Oman,OMN,Middle East & North Africa,HIC,High income,2445517
+Pakistan,PAK,South Asia,LMC,Lower middle income,156664697
+Palau,PLW,East Asia & Pacific,HIC,High income,19867
+Panama,PAN,Latin America & Caribbean ,HIC,High income,3269356
+Papua New Guinea,PNG,East Asia & Pacific,LMC,Lower middle income,6354245
+Paraguay,PRY,Latin America & Caribbean ,UMC,Upper middle income,5730549
+Peru,PER,Latin America & Caribbean ,UMC,Upper middle income,27624213
+Philippines,PHL,East Asia & Pacific,LMC,Lower middle income,84710542
+Poland,POL,Europe & Central Asia,HIC,High income,38182222
+Portugal,PRT,Europe & Central Asia,HIC,High income,10483861
+Puerto Rico,PRI,Latin America & Caribbean ,HIC,High income,3826878
+Qatar,QAT,Middle East & North Africa,HIC,High income,753334
+Romania,ROU,Europe & Central Asia,HIC,High income,21451748
+Russian Federation,RUS,Europe & Central Asia,UMC,Upper middle income,144067316
+Rwanda,RWA,Sub-Saharan Africa ,LIC,Low income,8680524
+Samoa,WSM,East Asia & Pacific,UMC,Upper middle income,178590
+San Marino,SMR,Europe & Central Asia,HIC,High income,28940
+Sao Tome and Principe,STP,Sub-Saharan Africa ,LMC,Lower middle income,153737
+Saudi Arabia,SAU,Middle East & North Africa,HIC,High income,23132682
+Senegal,SEN,Sub-Saharan Africa ,LMC,Lower middle income,10810083
+Serbia,SRB,Europe & Central Asia,UMC,Upper middle income,7463157
+Seychelles,SYC,Sub-Saharan Africa ,HIC,High income,82475
+Sierra Leone,SLE,Sub-Saharan Africa ,LIC,Low income,5433991
+Singapore,SGP,East Asia & Pacific,HIC,High income,4166664
+Sint Maarten (Dutch part),SXM,Latin America & Caribbean ,HIC,High income,32488
+Slovak Republic,SVK,Europe & Central Asia,HIC,High income,5372280
+Slovenia,SVN,Europe & Central Asia,HIC,High income,1997012
+Solomon Islands,SLB,East Asia & Pacific,LMC,Lower middle income,458539
+Somalia,SOM,Sub-Saharan Africa ,LIC,Low income,10130243
+South Africa,ZAF,Sub-Saharan Africa ,UMC,Upper middle income,47291610
+South Sudan,SSD,Sub-Saharan Africa ,LIC,Low income,7213351
+Spain,ESP,Europe & Central Asia,HIC,High income,42921895
+Sri Lanka,LKA,South Asia,LMC,Lower middle income,19387153
+St. Kitts and Nevis,KNA,Latin America & Caribbean ,HIC,High income,46323
+St. Lucia,LCA,Latin America & Caribbean ,UMC,Upper middle income,161816
+St. Martin (French part),MAF,Latin America & Caribbean ,HIC,High income,33186
+St. Vincent and the Grenadines,VCT,Latin America & Caribbean ,UMC,Upper middle income,108512
+Sudan,SDN,Sub-Saharan Africa ,LIC,Low income,30214193
+Suriname,SUR,Latin America & Caribbean ,UMC,Upper middle income,493680
+Sweden,SWE,Europe & Central Asia,HIC,High income,8993531
+Switzerland,CHE,Europe & Central Asia,HIC,High income,7389625
+Syrian Arab Republic,SYR,Middle East & North Africa,LIC,Low income,17827825
+"Taiwan, China",TWN,East Asia & Pacific,HIC,High income,NA
+Tajikistan,TJK,Europe & Central Asia,LIC,Low income,6662389
+Tanzania,TZA,Sub-Saharan Africa ,LMC,Lower middle income,37379767
+Thailand,THA,East Asia & Pacific,UMC,Upper middle income,64995299
+Timor-Leste,TLS,East Asia & Pacific,LMC,Lower middle income,971893
+Togo,TGO,Sub-Saharan Africa ,LIC,Low income,5467766
+Tonga,TON,East Asia & Pacific,UMC,Upper middle income,100218
+Trinidad and Tobago,TTO,Latin America & Caribbean ,HIC,High income,1290123
+Tunisia,TUN,Middle East & North Africa,LMC,Lower middle income,10022277
+Turkey,TUR,Europe & Central Asia,UMC,Upper middle income,67010930
+Turkmenistan,TKM,Europe & Central Asia,UMC,Upper middle income,4703401
+Turks and Caicos Islands,TCA,Latin America & Caribbean ,HIC,High income,26700
+Tuvalu,TUV,East Asia & Pacific,UMC,Upper middle income,9869
+Uganda,UGA,Sub-Saharan Africa ,LIC,Low income,26821297
+Ukraine,UKR,Europe & Central Asia,LMC,Lower middle income,47451626
+United Arab Emirates,ARE,Middle East & North Africa,HIC,High income,4068570
+United Kingdom,GBR,Europe & Central Asia,HIC,High income,59987905
+United States,USA,North America,HIC,High income,292805298
+Uruguay,URY,Latin America & Caribbean ,HIC,High income,3321476
+Uzbekistan,UZB,Europe & Central Asia,LMC,Lower middle income,25864350
+Vanuatu,VUT,East Asia & Pacific,LMC,Lower middle income,204127
+"Venezuela, RB",VEN,Latin America & Caribbean ,UMC,Upper middle income,25996594
+Vietnam,VNM,East Asia & Pacific,LMC,Lower middle income,83062821
+Virgin Islands (U.S.),VIR,Latin America & Caribbean ,HIC,High income,108467
+West Bank and Gaza,PSE,Middle East & North Africa,LMC,Lower middle income,3236626
+"Yemen, Rep.",YEM,Middle East & North Africa,LIC,Low income,19540098
+Zambia,ZMB,Sub-Saharan Africa ,LMC,Lower middle income,11550642
+Zimbabwe,ZWE,Sub-Saharan Africa ,LMC,Lower middle income,12019912
