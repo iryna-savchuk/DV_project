@@ -152,6 +152,28 @@ body {
   transform: translate(30px, 349px);
 }
 
+.rc-slider-track {
+  background-color: #cd7f32;
+}
+
+.rc-slider-dot-active {  
+  border-color: #cd7f32;
+  border: solid 2px #cd7f32;
+}
+
+.rc-slider-handle {
+  background-color: #cd7f32;
+  border-color: #cd7f32;
+}
+
+.rc-slider-handle:hover {
+  border-color: #cd7f32;
+}
+
+.rc-slider-handle-active:active {
+  border-color: #cd7f32;
+}
+
 /* Table of contents
 ––––––––––––––––––––––––––––––––––––––––––––––––
 - Plotly.js
