@@ -17,13 +17,12 @@ df = pd.read_csv(path + 'merged.csv')
 ###########################
 
 # Age 
-"""
 x = df['prizeAge']
 hist_data = dict(type='histogram', x=x, marker=dict(color='silver'))
 layout = dict(title=dict(text='Ages Distribution'))
 fig_1 = go.Figure(data=hist_data, layout=layout)
-fig_1.show(renderer='browser')
-"""
+
+
 
 # Choropleth
 df_density = make_density_df(df)
@@ -53,38 +52,9 @@ app = dash.Dash(__name__)
 server = app.server
 
 
-app.layout = html.Div(children=[
-    html.H1(children='Nobel Prizes Dashboard'),
-
-    html.Div(children='''Map'''),
-
-    dcc.Graph(
-        id='choropleth-graph',
-        figure=fig_choropleth
-    )
-])
-
-
 app.layout =  html.Div([
 
-    html.Div([
-        html.H1(children='Nobel Prizes Dashboard'),
-        html.Label('We are interested in investigating the historucal data on Nobel Prizes laureates.', 
-                    style={'color':'rgb(33 36 35)'}), 
-        html.Img(src=app.get_asset_url('Nobel_Prize.png'), style={'position': 'relative'}),
-    ], className='side_bar'),
-
-    html.Div(
-        html.Label("Age"), 
-    ),
-    html.Div(
-        html.Label("Map"), 
-    )
-])
-
-
-app.layout =  html.Div([
-
+    # Header DIV
      html.Div(
             [
                 html.Div(
@@ -93,9 +63,9 @@ app.layout =  html.Div([
                             src=app.get_asset_url("Nova_IMS.png"),
                             id="novaims-image",
                             style={
-                                "height": "60px",
+                                "height": "70px",
                                 "width": "auto",
-                                "margin-bottom": "25px",
+                                "margin-bottom": "20px",
                             },
                         )
                     ],
@@ -107,11 +77,11 @@ app.layout =  html.Div([
                         html.Div(
                             [
                                 html.H4(
-                                    "Food consumption characteristics of the European Union",
+                                    "Nobel Prize winners (1901-2022)",
                                     style={"font-weight": "bold"},
                                 ),
                                 html.H5(
-                                    "Analysis of the relationship between nutritional patterns and \n the health status within the countries", style={"margin-top": "0px"}
+                                    "Exploring historical data on the world’s most coveted award", style={"margin-top": "0px"}
                                 ),
                             ]
                         )
@@ -126,9 +96,9 @@ app.layout =  html.Div([
                             src=app.get_asset_url("Nobel_Prize.png"),
                             id="nobel-image",
                             style={
-                                "height": "60px",
+                                "height": "70px",
                                 "width": "auto",
-                                "margin-bottom": "25px",
+                                "margin-bottom": "20px",
                                 "float": "right"
                             },
                         )
@@ -139,23 +109,75 @@ app.layout =  html.Div([
             
             id="header",
             className="row flex-display",
-            style={"margin-bottom": "25px"},
+            style={"margin-bottom": "20px"},
+        ), # Header Div --end
+
+
+    # Main body DIV
+    html.Div([
+
+        html.Div(
+            [
+                html.H6("General health information about the countries", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
+                html.P("Similarly to nutrition, the health status also varies from country to country. The bar chart below shows the differences between the countries in terms of the following variables: prevalence of obesity in the adult population in % (Obesity), prevalence of diabetes in the adult population in % (Diabetes Prevalence), cardiovascular death rate per 100,000 population (Cardiovascular Death Rate), average life expectancy in years (Life Expectancy) and the expenditure of the government on the country's health system in % of the respective GDP (Health Expenditure).", className="control_label",style={"text-align": "justify"}),
+                
+                html.Div([dcc.Graph(id="bar_chart_category", figure=fig_1)],className="pretty_container twelve columns"),
+            ],
+            className="row pretty_container",
         ),
 
+        html.Div([
+            html.H1(children='Nobel Prizes Dashboard'),
+            html.Label('We are interested in investigating the historucal data on Nobel Prizes laureates.', 
+                        style={'color':'rgb(33 36 35)'}), 
+            html.Img(src=app.get_asset_url('Nobel_Prize.png'), style={'position': 'relative'}),
+            ]
+        ),
+
+        html.Div(children=[
+            html.H1(children='Nobel Prizes Dashboard'),
+
+            html.Div(children='''Map'''),
+
+            dcc.Graph(
+                id='choropleth-graph',
+                figure=fig_choropleth
+            )
+        ])
+    ]), # Main Body Div --end
 
 
-    html.Div([
-        html.H1(children='Nobel Prizes Dashboard'),
-        html.Label('We are interested in investigating the historucal data on Nobel Prizes laureates.', 
-                    style={'color':'rgb(33 36 35)'}), 
-        html.Img(src=app.get_asset_url('Nobel_Prize.png'), style={'position': 'relative'}),
-    ], className='side_bar'),
+    # Footer Div: Sources and Authors
+    html.Div([ 
+        # Sources pretty container
+        html.Div(
+                [
+                    html.H6("Sources", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
+                    dcc.Markdown(
+                        """\
+                            - Inspiration: https://www.nobelprize.org/prizes/
+                            - Nobelprize API reference that was used to get the data: https://nobelprize.readme.io/reference/getting-started
+                            - Kaggle dataset that was used for additional info: https://www.kaggle.com/datasets/imdevskp/nobel-prize
+                            - pyCirclize tool to create chord diagram graphs: https://moshi4.github.io/pyCirclize/chord_diagram/
+                            """
+                    ,style={"font-size":"10pt"}),
+                    
+                ],
+                className="row pretty_container",
+            ),
 
-])
-
-
-  
+        # Authors pretty container
+        html.Div(
+                [
+                    html.H6("Authors", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
+                    html.P("Cátia Sofia Pereira Parrinha (m20201320@novaims.unl.pt)  -  Iryna Savchuk (m20211310@novaims.unl.pt)  -  Gueu (????@novaims.unl.pt) ", 
+                        style={"text-align": "center", "font-size":"10pt"}),
+                ],
+                className="row pretty_container",
+            )
+    ]) # Footer Div --end
+]) # app layout Div --end
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=True) 
