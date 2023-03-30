@@ -1,7 +1,5 @@
 import dash
-from dash import dcc
-from dash import html
-import dash_daq as daq
+from dash import dcc, html, Input, Output
 import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
@@ -73,20 +71,6 @@ layout_choropleth = dict(geo=dict(projection={'type': 'natural earth'},
 
 fig_choropleth = go.Figure(data=data_choropleth, layout=layout_choropleth)
 fig_choropleth.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-
-#### Slider Map
-slider_map = daq.Slider(
-        id = 'slider_map',
-        handleLabel={"showCurrentValue": True, "label": "Year"},
-        marks = {str(i):str(i) for i in range(1900, 2020, 10)},
-        min = 1900,
-        max = 2022,
-        value = 2022, 
-        #step = 1,
-        size = 1000,
-        vertical=True,
-        color='#ab6400'
-    )
 
 ##########################
 #### The APP Layout ######
@@ -185,7 +169,9 @@ app.layout =  html.Div([
                                     1980: '1980', 1990: '1990', 2000: '2000',  2010: '2010',
                                     2020: '2020',},
                             tooltip={"always_visible": True}, 
-                            )
+                            id='my-range-slider'
+                            ),
+             html.Div(id='output-container-range-slider', style={'margin-top': 50})
             ],
             className="row pretty_container",
         ),
@@ -227,7 +213,11 @@ app.layout =  html.Div([
 #####################
 #### Callbacks ######
 #####################
-
+@app.callback(
+    Output('output-container-range-slider', 'children'),
+    [Input('my-range-slider', 'value')])
+def update_output(value):
+    return 'You have selected "{}"'.format(value)
 
 if __name__ == '__main__':
     app.run_server(debug=True) 
