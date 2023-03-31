@@ -528,8 +528,6 @@ input[type="button"].button-primary:focus {
   border-color: #1eaedb;
 }
 
-
-
 /* Forms
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 input[type="email"],
@@ -593,6 +591,7 @@ fieldset {
 input[type="checkbox"],
 input[type="radio"] {
   display: inline;
+  accent-color: #cd7f32;
 }
 label > .label-body {
   display: inline-block;

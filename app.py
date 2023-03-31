@@ -6,10 +6,9 @@ import numpy as np
 
 from functions import make_density_df, get_data_geo
 
-# Dataset 'Processing'
+# Dataset read
 path = 'data/'
 df = pd.read_csv(path + 'merged.csv')
-#df_emission_0 = df_emissions.loc[df_emissions['year']==2000]
 
 ###########################
 #### Building Graphs ######
@@ -80,7 +79,6 @@ server = app.server
 
 
 app.layout =  html.Div([
-
     # Header DIV
      html.Div(
             [
@@ -90,9 +88,11 @@ app.layout =  html.Div([
                             src=app.get_asset_url("Nova_IMS.png"),
                             id="novaims-image",
                             style={
-                                "height": "70px",
+                                "height": "60px",
                                 "width": "auto",
                                 "margin-bottom": "20px",
+                                "float": "left",
+                                "margin-left":"-17.333333%"
                             },
                         )
                     ],
@@ -156,22 +156,31 @@ app.layout =  html.Div([
             className="row pretty_container",
         ),
 
-        html.Div([
-            html.H6("Nobel Prizes Distribution by Country", style={"margin-top": "0","font-weight": "bold","text-align": "center"}), 
-            html.Div(
-                [dcc.Graph( id='choropleth-graph', figure=fig_choropleth)],
-                className="row pretty_container",
-            ),
-            html.Div(style={'margin-top': 50}), 
-            dcc.RangeSlider(min=1900, max=2022, value=[1901, 2022], 
-                            marks={ 1901: '1901', 1910: '1910', 1920: '1920',  1930: '1930',
-                                    1940: '1940', 1950: '1950', 1960: '1960',  1970: '1970',
-                                    1980: '1980', 1990: '1990', 2000: '2000',  2010: '2010',
-                                    2020: '2020',},
-                            tooltip={"always_visible": True}, 
-                            id='my-range-slider'
-                            ),
-             html.Div(id='output-container-range-slider', style={'margin-top': 50})
+        html.Div(
+            [
+                html.H6("Nobel Prizes Distribution by Country", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),     
+                html.Div([dcc.RadioItems(id='scale-type',
+                                options=[{'label': i, 'value': i} for i in ['Log Scale', 'Absolute Count']],
+                                value='Log Scale',
+                                labelStyle={'display': 'inline-block'}, #,className="pretty_container four columns",
+                                style={"float": "right"})
+                                ], className="control_label"    
+                        ),
+                html.Div(style={'margin-top': 30}), 
+                html.Div(
+                    [dcc.Graph(id='choropleth-graph', figure=fig_choropleth)],
+                    className="row pretty_container",
+                ),
+                html.Div(style={'margin-top': 50}), 
+                dcc.RangeSlider(min=1900, max=2022, value=[1901, 2022], 
+                                marks={ 1901: '1901', 1910: '1910', 1920: '1920',  1930: '1930',
+                                        1940: '1940', 1950: '1950', 1960: '1960',  1970: '1970',
+                                        1980: '1980', 1990: '1990', 2000: '2000',  2010: '2010',
+                                        2020: '2020',},
+                                tooltip={"always_visible": True}, 
+                                id='my-range-slider'
+                                ),
+                html.Div(id='output-container-range-slider', style={'margin-top': 50}) # for debugging
             ],
             className="row pretty_container",
         ),
@@ -187,7 +196,7 @@ app.layout =  html.Div([
                     dcc.Markdown(
                         """\
                             - Inspiration: https://www.nobelprize.org/prizes/
-                            - Nobelprize API reference that was used to get the data: https://nobelprize.readme.io/reference/getting-started
+                            - Nobelprize.org API reference that was used to get the data: https://nobelprize.readme.io/reference/getting-started
                             - Kaggle dataset that was used for additional info: https://www.kaggle.com/datasets/imdevskp/nobel-prize
                             - pyCirclize tool to create chord diagram graphs: https://moshi4.github.io/pyCirclize/chord_diagram/
                             """
@@ -213,11 +222,68 @@ app.layout =  html.Div([
 #####################
 #### Callbacks ######
 #####################
+
+################################### 1. choropleth callback #####################################
 @app.callback(
-    Output('output-container-range-slider', 'children'),
+    Output('choropleth-graph', 'figure'),
+    Input('scale-type', 'value'),
+    [Input('my-range-slider', 'value')])
+
+def update_colorpleth(radiovalue, slidervalue):
+
+    # Filtering years and generating new df_density
+    mask = (df['year'] >= slidervalue[0]) & (df['year'] <= slidervalue[1])  # including the chosen years
+    df_chosen = df.loc[mask]
+    df_density = make_density_df(df_chosen)
+    
+    # Updating values that depend on Scale chosen by user
+    if radiovalue=="Log Scale":
+        z = np.log(df_density['count'])
+        for_hover_string = '(log)'
+        zmin=np.log(df_density['count'].min())
+        zmax=np.log(df_density['count'].max())
+    else:
+        z = df_density['count']
+        for_hover_string = ''
+        zmin=df_density['count'].min()
+        zmax=df_density['count'].max()
+
+    # Cenerating a new Cholorpleth
+    data_choropleth = dict(type='choropleth',
+                            locations=df_density['iso-a3'],
+                            autocolorscale = False,
+                            z=z,
+                            zmin=zmin,
+                            zmax=zmax,
+                            colorscale = ["#fcf2bf", "#ab6400"],   
+                            marker_line_color = '#674e04',
+                            colorbar=dict(title='Total Prizes'+for_hover_string),
+                            text=df_density['name'],
+                            hovertemplate='Country: %{text} <br>'+'Prizes'+ for_hover_string+': %{z} <br><extra></extra>',
+                            )
+                        
+    layout_choropleth = dict(geo=dict(projection={'type': 'natural earth'}, 
+                            bgcolor= 'rgba(0,0,0,0)'))
+
+    fig_choropleth = go.Figure(data=data_choropleth, layout=layout_choropleth)
+    fig_choropleth.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+
+    return fig_choropleth 
+
+
+
+# Helpful for debugging (delete when the app is ready)
+""" 
+@app.callback(
+    Output('output-container', 'children'),
     [Input('my-range-slider', 'value')])
 def update_output(value):
     return 'You have selected "{}"'.format(value)
+"""
 
+
+######################
+#### SERVER RUN ######
+######################
 if __name__ == '__main__':
     app.run_server(debug=True) 
