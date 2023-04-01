@@ -10,6 +10,8 @@ from functions import make_density_df, get_data_geo
 path = 'data/'
 df = pd.read_csv(path + 'merged.csv')
 
+category_options = ['All categories', 'Physics', 'Chemistry', 'Medicine', 'Literature', 'Peace', 'Economics']
+
 ###########################
 #### Building Graphs ######
 ###########################
@@ -26,6 +28,23 @@ layout_hist_age = dict(title=dict(text='Ages Distribution'),
 fig_hist_age = go.Figure(data=data_hist_age, layout=layout_hist_age)
 fig_hist_age.update_yaxes(showline=True, linewidth=2, linecolor='#674e04', gridcolor='#a57a50')
 fig_hist_age.update_xaxes(showline=True, linewidth=2, linecolor='#674e04')
+
+
+#### Age by Gender Histogram
+
+# Filter data by gender
+male_data = df.loc[df['gender'] == 'male', 'prizeAge']
+female_data = df.loc[df['gender'] == 'female', 'prizeAge']
+
+# Create traces for each group
+male_hist = go.Histogram(x=male_data, name='Male', marker=dict(color='#333F44'))
+female_hist = go.Histogram(x=female_data, name='Female', marker=dict(color='#37AA9C'))
+# Create layout
+layout = go.Layout(title=dict(text='Ages Distribution by Gender'), 
+                   paper_bgcolor='rgba(0,0,0,0)', 
+                   plot_bgcolor='rgba(0,0,0,0)')
+# Create figure 
+fig_hist_age_by_gender = go.Figure(data=[male_hist, female_hist], layout=layout)
 
 
 #### Category Barchart
@@ -156,23 +175,68 @@ app.layout =  html.Div([
             className="row pretty_container",
         ),
 
+
+        html.Div(
+            [
+                html.Div([dcc.Graph(id="fig_hist_age_by_gender", figure=fig_hist_age_by_gender)],) #className="pretty_container five columns"),
+            ],
+            className="row pretty_container",
+        ),
+
+
         html.Div(
             [
                 html.H6("Nobel Prizes Distribution by Country", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),     
-                html.Div([dcc.RadioItems(id='scale-type',
-                                options=[{'label': i, 'value': i} for i in ['Log Scale', 'Absolute Count']],
-                                value='Log Scale',
-                                labelStyle={'display': 'inline-block'}, #,className="pretty_container four columns",
-                                style={"float": "right"})
-                                ], className="control_label"    
-                        ),
                 html.Div(style={'margin-top': 30}), 
-                html.Div(
-                    [dcc.Graph(id='choropleth-graph', figure=fig_choropleth)],
-                    className="row pretty_container",
-                ),
+
+                html.Div([
+                    # Div contining choropleth graph
+                    html.Div(
+                        [dcc.Graph(id='choropleth-graph', figure=fig_choropleth)],
+                        className="no_border_container nine columns",
+                    ),
+
+                    # Div containg selection options
+                    html.Div(
+                        [
+                        html.Div([
+                            html.P("Select Gender", className="control_label", style={"font-weight": "bold", "text-align": "left"}),
+                            dcc.Dropdown(
+                                id="chosen-gender",
+                                options=[{"label": i, "value": i} for i in ['Male', 'Female', 'Both']],
+                                value="Both")
+                            ], className="container twelve columns"
+                        ),
+
+                        #html.Div(style={'margin-top': 100}),
+
+                        html.Div([
+                            html.P("Select Category", className="control_label", style={"font-weight": "bold", "text-align": "left"}),
+                            dcc.Dropdown(
+                                id="chosen-category",
+                                options=[{"label": i, "value": i} for i in category_options],
+                                value="All categories")
+                            ], className="container twelve columns",  style={'margin-top': 100}
+                        ),
+
+                        html.Div([dcc.RadioItems(id='scale-type',
+                                    options=[{'label': i, 'value': i} for i in ['Log Scale', 'Absolute Count']],
+                                    value='Log Scale',
+                                    #labelStyle={'display': 'inline-block'}, #,className="pretty_container four columns",
+                                    style={"float": "right"})
+                                    ], 
+                                className="container twelve columns",
+                                style={'margin-top': 100}
+                                #style={'display': 'flex', 'vertical-align':'bottom'}
+                        ),    
+
+                        ], className="pretty_container two columns", 
+                    )
+                ],className="row"),
+
                 html.Div(style={'margin-top': 50}), 
-                dcc.RangeSlider(min=1900, max=2022, value=[1901, 2022], 
+
+                dcc.RangeSlider(min=1901, max=2022, value=[1901, 2022], 
                                 marks={ 1901: '1901', 1910: '1910', 1920: '1920',  1930: '1930',
                                         1940: '1940', 1950: '1950', 1960: '1960',  1970: '1970',
                                         1980: '1980', 1990: '1990', 2000: '2000',  2010: '2010',
@@ -180,6 +244,7 @@ app.layout =  html.Div([
                                 tooltip={"always_visible": True}, 
                                 id='my-range-slider'
                                 ),
+
                 html.Div(id='output-container-range-slider', style={'margin-top': 50}) # for debugging
             ],
             className="row pretty_container",
@@ -195,13 +260,12 @@ app.layout =  html.Div([
                     html.H6("Sources", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
                     dcc.Markdown(
                         """\
-                            - Inspiration: https://www.nobelprize.org/prizes/
+                            - Inspiration #1 - "Nobel Prizes: Is there a secret formula to winning one?": https://www.bbc.com/future/article/20121008-winning-formula-for-nobel-prizes
+                            - Inspiration #2 - Infographic: Nobel Prize winners 1901-2021: https://www.aljazeera.com/news/2021/10/7/infographic-nobel-prize-winners-1901-2021
+                            - Official website: https://www.nobelprize.org/prizes/
                             - Nobelprize.org API reference that was used to get the data: https://nobelprize.readme.io/reference/getting-started
-                            - Kaggle dataset that was used for additional info: https://www.kaggle.com/datasets/imdevskp/nobel-prize
-                            - pyCirclize tool to create chord diagram graphs: https://moshi4.github.io/pyCirclize/chord_diagram/
                             """
-                    ,style={"font-size":"10pt"}),
-                    
+                    ,style={"font-size":"10pt"}),                  
                 ],
                 className="row pretty_container",
             ),
@@ -239,7 +303,7 @@ def update_colorpleth(radiovalue, slidervalue):
     # Updating values that depend on Scale chosen by user
     if radiovalue=="Log Scale":
         z = np.log(df_density['count'])
-        for_hover_string = '(log)'
+        for_hover_string = ' (log)'
         zmin=np.log(df_density['count'].min())
         zmax=np.log(df_density['count'].max())
     else:
