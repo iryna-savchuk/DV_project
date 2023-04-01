@@ -89,6 +89,7 @@ layout_choropleth = dict(geo=dict(projection={'type': 'natural earth'},
 
 fig_choropleth = go.Figure(data=data_choropleth, layout=layout_choropleth)
 fig_choropleth.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+fig_choropleth.update_geos(showcoastlines=False)
 
 ##########################
 #### The APP Layout ######
@@ -274,7 +275,7 @@ app.layout =  html.Div([
         html.Div(
                 [
                     html.H6("Authors", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
-                    html.P("Cátia Sofia Pereira Parrinha (m20201320@novaims.unl.pt)  -  Iryna Savchuk (m20211310@novaims.unl.pt)  -  Gueu (????@novaims.unl.pt) ", 
+                    html.P("Cátia Parrinha (m20201320@novaims.unl.pt)  -  Iryna Savchuk (m20211310@novaims.unl.pt)  -  Gueu (????@novaims.unl.pt) ", 
                         style={"text-align": "center", "font-size":"10pt"}),
                 ],
                 className="row pretty_container",
@@ -331,7 +332,7 @@ def update_colorpleth(radiovalue, slidervalue):
 
     fig_choropleth = go.Figure(data=data_choropleth, layout=layout_choropleth)
     fig_choropleth.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-
+    fig_choropleth.update_geos(showcoastlines=False)
     return fig_choropleth 
 
 
