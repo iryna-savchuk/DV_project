@@ -1,22 +1,27 @@
-import dash
-from dash import dcc, html, Input, Output
-import plotly.graph_objects as go
+# Importing the necessary libraries and packages
 import pandas as pd
 import numpy as np
 
+import dash
+from dash import dcc, html, Input, Output
+import plotly.graph_objects as go
+import plotly.express as px
+
+# Importing Custom functions
 from functions import make_density_df, get_data_geo
 
 # Dataset read
 path = 'data/'
 df = pd.read_csv(path + 'merged.csv')
 
+# Pre-defining the options for filtering menu in Map
 category_options = ['All categories', 'Physics', 'Chemistry', 'Medicine', 'Literature', 'Peace', 'Economics']
 
 ###########################
 #### Building Graphs ######
 ###########################
 
-#### Age Histogram
+####### Age Histogram #######
 data_hist_age = dict(type='histogram', 
                      x=df['prizeAge'], 
                      marker=dict(color='#a57a50'),
@@ -30,7 +35,7 @@ fig_hist_age.update_yaxes(showline=True, linewidth=2, linecolor='#674e04', gridc
 fig_hist_age.update_xaxes(showline=True, linewidth=2, linecolor='#674e04')
 
 
-#### Age by Gender Histogram
+####### Age by Gender Histogram ####### 
 
 # Filter data by gender
 male_data = df.loc[df['gender'] == 'male', 'prizeAge']
@@ -47,7 +52,7 @@ layout = go.Layout(title=dict(text='Ages Distribution by Gender'),
 fig_hist_age_by_gender = go.Figure(data=[male_hist, female_hist], layout=layout)
 
 
-#### Category Barchart
+####### Category Barchart ####### 
 category_labels = df['category'].value_counts()
 category_values = (category_labels / category_labels.sum()) * 100
 unique_category = df['category'].unique()
@@ -68,7 +73,55 @@ layout_bar_category = dict(title=dict(text='Prizes by Category'),
 fig_bar_category = go.Figure(data=[data_bar_category], layout=layout_bar_category)
 
 
-#### Choropleth
+#######  Sunburst Digram ####### 
+sunburst_df =  df.groupby(['category', 'gender'], as_index=False).size()
+sunburst_df['total'] = str(df.shape[0]) + ' Laureates'
+sunburst_df['laureate'] = sunburst_df['gender'].apply(lambda x: 'Organisation' if x=='org' else 'Individual')
+sunburst_df['category'] = sunburst_df['category'].apply(lambda x: x.capitalize())
+
+fig_sunburst = px.sunburst(sunburst_df, 
+                           path=['total', 'laureate', 'category'],  
+                           #path=['laureate', 'category'], 
+                           values='size',
+                           color = 'laureate',
+                           color_discrete_map={'(?)':'', 'Individual':'#eb993c', 'Organisation':'#877769'},
+                           #title="TWO laureate types - SIX award categories",
+                          )
+
+fig_sunburst.update_traces(hovertemplate="<b>%{label}:</b><br>%{value} Laureates<extra></extra>")
+#fig_sunburst.update_traces(insidetextorientation='horizontal')
+#fig_sunburst.update_traces(insidetextfont_size=14)
+fig_sunburst.update_traces(leaf_opacity=0.6)
+fig_sunburst.update_layout(margin={"r":0,"t":2,"l":0,"b":2})
+fig_sunburst.update_traces(textfont_size=14)
+
+
+####### Scatter plot - Category by Year ####### 
+x = df['year']
+y = df['category'].str.capitalize()
+size = df.shape[0]*[6]
+
+color_dict={'Physics':'#623f17', 'Chemistry':'#ab6400', 'Medicine':'#eb993c', 
+            'Literature':'#6cb436', 'Peace':'#6a93c9', 'Economics': '#c32794'}  
+color = [color_dict[i] for i in y]
+
+data_scatter = dict(type='scatter', x=x, y=y,
+                    marker_color=color,
+                    marker_opacity=1,
+                    mode='markers',
+                    marker=dict(size=size),
+                    hovertemplate="Category: %{y}<br>Year: %{x}<br><extra></extra>" ,
+                    showlegend=False)
+
+layout_scatter = dict( #title=dict(text='Category by Year'), 
+                      yaxis=dict(title='Category', gridwidth=2),
+                      xaxis=dict(title='Year', gridwidth=2), #, tickvals= [i for i in range(1900, 2025, 10)]),
+                      plot_bgcolor='#fbe9d9')
+
+fig_scatter = go.Figure(data=data_scatter, layout=layout_scatter)
+
+
+####### Choropleth ####### 
 df_density = make_density_df(df)
 
 data_choropleth = dict(type='choropleth',
@@ -162,7 +215,61 @@ app.layout =  html.Div([
 
     # Main body DIV
     html.Div([
+        html.Div(
+            [
+                html.P("The Nobel Prize is an international award administered by the Nobel Foundation in Stockholm, Sweden, and based on the fortune of Alfred Nobel, Swedish inventor and entrepreneur. In 1968, Sveriges Riksbank established The Sveriges Riksbank Prize in Economic Sciences in Memory of Alfred Nobel. Each prize consists of a medal, a personal diploma, and a cash award.", 
+                    className="control_label",style={"text-align": "justify"}),
+            ],
+            className="row pretty_container",
+        ),
 
+        html.Div(
+            [        
+                html.H6("General Nobel Prize information", style={"margin-top": "0","font-weight": "bold","text-align": "center"}), 
+                #html.Div(style={'margin-top': 50}),      
+                html.Div([dcc.Graph(id="fig_sunburst", figure=fig_sunburst)], className="container seven columns"),
+                html.Div([
+                    dcc.Markdown("A person or organisation awarded the Nobel Prize is called Nobel Prize **laureate**."),
+                    html.P("The Nobel Prize recognises the highest achievement in 6 categories:"),
+                    dcc.Markdown('''
+                                    * Medicine
+                                    * Physics
+                                    * Chemistry
+                                    * Literature
+                                    * Peace
+                                    * Economics
+                                '''),
+                    html.P("Between 1901 and 2022, 615 Nobel Prizes were awarded to 989 laureates."),
+                    ],
+                    className="container four columns"
+                ),
+            ],
+            className="row pretty-container",
+        ),
+
+        html.Div(style={'margin-top': 50}), 
+
+        html.Div(
+            [              
+                html.Div([
+                    html.H6("Distribution of Category By year", style={"margin-top": "0","font-weight": "bold","text-align": "center"}), 
+                    html.P("Some text here, some more text, more text, more text, even more more more text.\
+                            Some text here, some more text, more text, more text, even more more more text.\
+                            Some text here, some more text, more text, more text, even more more more text.\
+                            Some text here, some more text, more text, more text, even more more more text."),
+                    ],
+                    className="container four columns"
+                ),
+                html.Div([dcc.Graph(id="fig_scatter", figure=fig_scatter)], className="container seven columns"),
+            ],
+            className="row pretty-container",
+        ),
+
+        html.Div(
+                    [
+                    html.H6("Distribution of Category By year", style={"margin-top": "0","font-weight": "bold","text-align": "center"}), 
+                    ], className="pretty_container two columns"),
+                    
         html.Div(
             [
                 html.H6("General Nobel Prize information", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
@@ -176,15 +283,7 @@ app.layout =  html.Div([
             className="row pretty_container",
         ),
 
-
-        html.Div(
-            [
-                html.Div([dcc.Graph(id="fig_hist_age_by_gender", figure=fig_hist_age_by_gender)],) #className="pretty_container five columns"),
-            ],
-            className="row pretty_container",
-        ),
-
-
+        # "Nobel Prizes Distribution by Country"
         html.Div(
             [
                 html.H6("Nobel Prizes Distribution by Country", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),     
