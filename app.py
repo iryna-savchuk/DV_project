@@ -121,6 +121,59 @@ layout_scatter = dict(title=dict(text='Awarded Categories by Year'),
 fig_scatter = go.Figure(data=data_scatter, layout=layout_scatter)
 
 
+####### Barchart: Gender by Year #######
+df['count'] = 1
+df['total'] = len(df['count'])
+
+pivot_table = pd.pivot_table(df, values='count', index='year', columns='gender', aggfunc='count', fill_value = 0)
+df_gender_year = pivot_table.reset_index()
+
+# Set the columns we want to our plot
+year = df_gender_year['year']
+female = df_gender_year['female']
+male = df_gender_year['male']*(-1)
+
+# Creating instance of the figure
+fig_bar_gender = go.Figure()
+  
+# Adding Female data to the figure
+fig_bar_gender.add_trace(go.Bar(y = year, 
+                        x = female,
+                        name = 'Female', 
+                        orientation = 'h',
+                        marker=dict(color='#877769') 
+                        ))
+  
+# Adding Male data to the figure
+fig_bar_gender.add_trace(go.Bar(y= year, 
+                        x = male, 
+                        name = 'Male', 
+                        orientation = 'h',
+                        marker=dict(color='#e4a76c')))
+    
+# Updating the layout for our graph
+fig_bar_gender.update_layout(title = 'Gender by Year',
+                 title_font_size = 22, barmode = 'overlay',
+                 bargap = 0.0, bargroupgap = 0,
+                 xaxis = dict(tickvals = [-14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1,
+                                          0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+                                
+                              ticktext = [14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,
+                                          0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+                                
+                              title = 'Gender by Year',
+                              title_font_size = 14)
+                 )
+
+# Make a horizontal highlight section
+fig_bar_gender.add_hrect(y0=1939, y1=1945, 
+                annotation_text="II World War", annotation_position='right',  
+                annotation_font_size=12,
+                annotation_font_color="Black",
+                fillcolor="Grey", opacity=0.25)
+
+
+
 ####### Choropleth ####### 
 df_density = make_density_df(df)
 
@@ -224,7 +277,8 @@ app.layout =  html.Div([
         ),
 
 
-         html.Div(
+        #General Nobel Prize information
+        html.Div(
             [
                 html.H6("General Nobel Prize information", style={"margin-top": "0","font-weight": "bold","text-align": "center"}), 
                 html.Div([dcc.Graph(id="fig_sunburst", figure=fig_sunburst)], className="sixish columns pretty_container"),
@@ -248,9 +302,11 @@ app.layout =  html.Div([
             className="row pretty_container",
         ),
         #html.Div(style={'margin-top': 50}), 
-        html.Div(
+
+
+       html.Div(
             [
-                html.H6("Distribution of Category By year", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),          
+                html.H6("Huge Gender Gap", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),          
                 html.Div([
                     html.P("Some text here, some more text, more text, more text, even more more more text.\
                             Some text here, some more text, more text, more text, even more more more text.\
@@ -259,21 +315,7 @@ app.layout =  html.Div([
                     ],
                     className="two columns"
                 ),
-                html.Div([dcc.Graph(id="fig_scatter2", figure=fig_scatter)], className="nine columns"),
-            ],
-            className="row pretty_container",
-        ),
-
-                    
-        html.Div(
-            [
-                html.H6("DUPLICATE General Nobel Prize information", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
-                html.P("The Nobel Prize is an international award administered by the Nobel Foundation in Stockholm, Sweden, and based on the fortune of Alfred Nobel, Swedish inventor and entrepreneur. In 1968, Sveriges Riksbank established The Sveriges Riksbank Prize in Economic Sciences in Memory of Alfred Nobel, founder of the Nobel Prize. Each prize consists of a medal, a personal diploma, and a cash award.", 
-                    className="control_label",style={"text-align": "justify"}),
-                html.P("A person or organisation awarded the Nobel Prize is called Nobel Prize laureate. The word “laureate” refers to being signified by the laurel wreath. In ancient Greece, laurel wreaths were awarded to victors as a sign of honour.", 
-                    className="control_label",style={"text-align": "justify"}),
-                html.Div([dcc.Graph(id="fig_hist_age", figure=fig_hist_age)], className="pretty_container five columns"),
-                html.Div([dcc.Graph(id="fig_bar_category", figure=fig_bar_category)], className="pretty_container five columns"),
+                html.Div([dcc.Graph(id="fig_bar_gender", figure=fig_bar_gender)], className="nine columns"),
             ],
             className="row pretty_container",
         ),
@@ -341,6 +383,37 @@ app.layout =  html.Div([
                                 ),
 
                 html.Div(id='output-container-range-slider', style={'margin-top': 50}) # for debugging
+            ],
+            className="row pretty_container",
+        ),
+
+
+       html.Div(
+            [
+                html.H6("Duplicate: Distribution - Category by Year", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),          
+                html.Div([
+                    html.P("Some text here, some more text, more text, more text, even more more more text.\
+                            Some text here, some more text, more text, more text, even more more more text.\
+                            Some text here, some more text, more text, more text, even more more more text.\
+                            Some text here, some more text, more text, more text, even more more more text."),
+                    ],
+                    className="two columns"
+                ),
+                html.Div([dcc.Graph(id="fig_scatter2", figure=fig_scatter)], className="nine columns"),
+            ],
+            className="row pretty_container",
+        ),
+
+
+        html.Div(
+            [
+                html.H6("DUPLICATE General Nobel Prize information", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
+                html.P("The Nobel Prize is an international award administered by the Nobel Foundation in Stockholm, Sweden, and based on the fortune of Alfred Nobel, Swedish inventor and entrepreneur. In 1968, Sveriges Riksbank established The Sveriges Riksbank Prize in Economic Sciences in Memory of Alfred Nobel, founder of the Nobel Prize. Each prize consists of a medal, a personal diploma, and a cash award.", 
+                    className="control_label",style={"text-align": "justify"}),
+                html.P("A person or organisation awarded the Nobel Prize is called Nobel Prize laureate. The word “laureate” refers to being signified by the laurel wreath. In ancient Greece, laurel wreaths were awarded to victors as a sign of honour.", 
+                    className="control_label",style={"text-align": "justify"}),
+                html.Div([dcc.Graph(id="fig_hist_age", figure=fig_hist_age)], className="pretty_container five columns"),
+                html.Div([dcc.Graph(id="fig_bar_category", figure=fig_bar_category)], className="pretty_container five columns"),
             ],
             className="row pretty_container",
         ),
