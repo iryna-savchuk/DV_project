@@ -6,6 +6,7 @@ import dash
 from dash import dcc, html, Input, Output
 import plotly.graph_objects as go
 import plotly.express as px
+from plotly.subplots import make_subplots
 
 from io import BytesIO
 import base64
@@ -24,7 +25,10 @@ category_options = ['All categories', 'Physics', 'Chemistry', 'Medicine', 'Liter
 #### Building Graphs ######
 ###########################
 
-####### Age Histogram #######
+#=======================================
+#========== Age Histogram ==============
+#=======================================
+
 data_hist_age = dict(type='histogram', 
                      x=df['prizeAge'], 
                      marker=dict(color='#a57a50'),
@@ -37,8 +41,9 @@ fig_hist_age = go.Figure(data=data_hist_age, layout=layout_hist_age)
 fig_hist_age.update_yaxes(showline=True, linewidth=2, linecolor='#674e04', gridcolor='#a57a50')
 fig_hist_age.update_xaxes(showline=True, linewidth=2, linecolor='#674e04')
 
-
-####### Age by Gender Histogram ####### 
+#=======================================
+#======= Age by Gender Histogram ======= 
+#=======================================
 
 # Filter data by gender
 male_data = df.loc[df['gender'] == 'male', 'prizeAge']
@@ -54,8 +59,10 @@ layout = go.Layout(title=dict(text='Ages Distribution by Gender'),
 # Create figure 
 fig_hist_age_by_gender = go.Figure(data=[male_hist, female_hist], layout=layout)
 
+#=================================
+#======= Category Barchart ======= 
+#=================================
 
-####### Category Barchart ####### 
 category_labels = df['category'].value_counts()
 category_values = (category_labels / category_labels.sum()) * 100
 unique_category = df['category'].unique()
@@ -75,8 +82,10 @@ layout_bar_category = dict(title=dict(text='Prizes by Category'),
 
 fig_bar_category = go.Figure(data=[data_bar_category], layout=layout_bar_category)
 
+#===============================
+#======= Sunburst Digram ======= 
+#===============================
 
-#######  Sunburst Digram ####### 
 sunburst_df =  df.groupby(['category', 'gender'], as_index=False).size()
 sunburst_df['total'] = str(df.shape[0]) + ' Laureates'
 sunburst_df['laureate'] = sunburst_df['gender'].apply(lambda x: 'Organisation' if x=='org' else 'Individual')
@@ -98,8 +107,10 @@ fig_sunburst.update_traces(leaf_opacity=0.6)
 fig_sunburst.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 fig_sunburst.update_traces(textfont_size=14)
 
+#===============================================
+#======= Scatter plot - Category by Year ======= 
+#===============================================
 
-####### Scatter plot - Category by Year ####### 
 x = df['year']
 y = df['category'].str.capitalize()
 size = df.shape[0]*[6]
@@ -123,8 +134,10 @@ layout_scatter = dict(title=dict(text='Awarded Categories by Year'),
 
 fig_scatter = go.Figure(data=data_scatter, layout=layout_scatter)
 
+#========================================
+#======= Barchart: Gender by Year ======= 
+#========================================
 
-####### Barchart: Gender by Year #######
 df['count'] = 1
 df['total'] = len(df['count'])
 
@@ -137,47 +150,66 @@ female = df_gender_year['female']
 male = df_gender_year['male']*(-1)
 
 # Creating instance of the figure
-fig_bar_gender = go.Figure()
-  
-# Adding Female data to the figure
-fig_bar_gender.add_trace(go.Bar(y = year, 
-                        x = female,
-                        name = 'Female', 
-                        orientation = 'h',
-                        marker=dict(color='#877769') 
-                        ))
+#fig_bar_gender = go.Figure()
+fig_bar_gender = make_subplots(rows=1, cols=2, specs=[[{}, {}]], 
+                               shared_yaxes=True, horizontal_spacing=0.05,
+                               )
   
 # Adding Male data to the figure
-fig_bar_gender.add_trace(go.Bar(y= year, 
-                        x = male, 
-                        name = 'Male', 
-                        orientation = 'h',
-                        marker=dict(color='#e4a76c')))
+fig_bar_gender.add_trace(go.Bar(y=year, x=male, 
+                         name='Male', orientation='h',
+                         marker=dict(color='#83531b'),
+                         hovertemplate='Year: %{y} <br>'+'Males: %{x} <br><extra></extra>',
+                         ), 1, 1)
+
+# Adding Female data to the figure
+fig_bar_gender.add_trace(go.Bar(y=year, x=female,
+                        name='Female', orientation='h',
+                        marker=dict(color='#cb7e1f'),
+                        hovertemplate='Year: %{y} <br>'+'Females: %{x} <br><extra></extra>',
+                        ), 1, 2)
     
 # Updating the layout for our graph
 fig_bar_gender.update_layout(title = 'Gender by Year',
                  title_font_size = 22, barmode = 'overlay',
-                 bargap = 0.0, bargroupgap = 0,
-                 xaxis = dict(tickvals = [-14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1,
-                                          0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
-                                
-                              ticktext = [14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,
-                                          0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
-                                
-                              title = 'Gender by Year',
-                              title_font_size = 14)
-                 )
+                 bargap = 0.1, bargroupgap = 0,
+                 xaxis = dict(tickmode = 'array',
+                              tickvals = [-14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1],
+                                          #0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+                              ticktext = [14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
+                                          #0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+                              title = 'Male',
+                              title_font_size = 15),
+                xaxis2 = dict(range=[0, 14],
+                              tickvals = [#-14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1,
+                                          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+                              ticktext = [#14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,
+                                          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+                              title = 'Female',
+                              title_font_size = 15),
+
+                yaxis=dict(side='right',
+                           tickvals = [1901, 1911, 1921, 1931, 1941, 1951, 1961, 1971, 1981, 1991, 2001, 2011, 2021],
+                           ticktext = [1901, 1911, 1921, 1931, 1941, 1951, 1961, 1971, 1981, 1991, 2001, 2011, 2021],
+                           autorange="reversed"
+                        ),
+
+                plot_bgcolor='#fbe9d9'
+                )
 
 # Make a horizontal highlight section
-fig_bar_gender.add_hrect(y0=1939, y1=1945, 
+fig_bar_gender.add_hrect(y0=1939, y1=1945, row=1, col=1,
+                fillcolor="Grey", opacity=0.25)
+
+fig_bar_gender.add_hrect(y0=1939, y1=1945, row=1, col=2,
                 annotation_text="II World War", annotation_position='right',  
                 annotation_font_size=12,
                 annotation_font_color="Black",
                 fillcolor="Grey", opacity=0.25)
 
-
-
-####### Choropleth ####### 
+#==============================
+#======= Choropleth Map ======= 
+#==============================
 df_density = make_density_df(df)
 
 data_choropleth = dict(type='choropleth',
@@ -199,6 +231,7 @@ layout_choropleth = dict(geo=dict(projection={'type': 'natural earth'},
 fig_choropleth = go.Figure(data=data_choropleth, layout=layout_choropleth)
 fig_choropleth.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 fig_choropleth.update_geos(showcoastlines=False)
+
 
 ##########################
 #### The APP Layout ######
@@ -478,6 +511,7 @@ def update_colorpleth(radiovalue, slidervalue):
     return fig_choropleth 
 
 
+################################### 2. WorldCLoud callback #####################################
 @app.callback(
     Output('image_wordcloud', 'src'), 
     [Input('image_wordcloud', 'id')])
