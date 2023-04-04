@@ -7,8 +7,11 @@ from dash import dcc, html, Input, Output
 import plotly.graph_objects as go
 import plotly.express as px
 
+from io import BytesIO
+import base64
+
 # Importing Custom functions
-from functions import make_density_df, get_data_geo
+from functions import make_density_df, get_data_geo, plot_wordcloud
 
 # Dataset read
 path = 'data/'
@@ -283,20 +286,10 @@ app.layout =  html.Div([
                 html.H6("General Nobel Prize information", style={"margin-top": "0","font-weight": "bold","text-align": "center"}), 
                 html.Div([dcc.Graph(id="fig_sunburst", figure=fig_sunburst)], className="sixish columns pretty_container"),
                 html.Div([
-                    html.H6("Laureate Types and Award Categories"),
                     dcc.Markdown("A person or organisation awarded the Nobel Prize is called Nobel Prize **laureate**. Between 1901 and 2022, 615 Nobel Prizes were awarded to 989 laureates."),
-                    html.P("The Nobel Prize recognises the highest achievement in 6 categories:"),
-                    dcc.Markdown('''
-                                    * Medicine
-                                    * Physics
-                                    * Chemistry
-                                    * Literature
-                                    * Peace
-                                    * Economics
-                                '''),
-                    html.P("Between 1901 and 2022, 615 Nobel Prizes were awarded to 989 laureates."),
+                    html.P("The Nobel Prize recognises the highest achievement in 6 categories: Medicine, Physics, Chemistry, Literature, Peace,  Economics"),
                     ], className="fivish columns pretty_container"),
-
+                html.Div([html.Img(id="image_wordcloud", className="fivish columns pretty_container")]),
                 html.Div([dcc.Graph(id="fig_scatter", figure=fig_scatter)], className="eleven columns pretty_container"),
             ],
             className="row pretty_container",
@@ -387,27 +380,9 @@ app.layout =  html.Div([
             className="row pretty_container",
         ),
 
-
-       html.Div(
-            [
-                html.H6("Duplicate: Distribution - Category by Year", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),          
-                html.Div([
-                    html.P("Some text here, some more text, more text, more text, even more more more text.\
-                            Some text here, some more text, more text, more text, even more more more text.\
-                            Some text here, some more text, more text, more text, even more more more text.\
-                            Some text here, some more text, more text, more text, even more more more text."),
-                    ],
-                    className="two columns"
-                ),
-                html.Div([dcc.Graph(id="fig_scatter2", figure=fig_scatter)], className="nine columns"),
-            ],
-            className="row pretty_container",
-        ),
-
-
         html.Div(
             [
-                html.H6("DUPLICATE General Nobel Prize information", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
+                html.H6("DRAFT General Nobel Prize information", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
                 html.P("The Nobel Prize is an international award administered by the Nobel Foundation in Stockholm, Sweden, and based on the fortune of Alfred Nobel, Swedish inventor and entrepreneur. In 1968, Sveriges Riksbank established The Sveriges Riksbank Prize in Economic Sciences in Memory of Alfred Nobel, founder of the Nobel Prize. Each prize consists of a medal, a personal diploma, and a cash award.", 
                     className="control_label",style={"text-align": "justify"}),
                 html.P("A person or organisation awarded the Nobel Prize is called Nobel Prize laureate. The word “laureate” refers to being signified by the laurel wreath. In ancient Greece, laurel wreaths were awarded to victors as a sign of honour.", 
@@ -502,6 +477,15 @@ def update_colorpleth(radiovalue, slidervalue):
     fig_choropleth.update_geos(showcoastlines=False)
     return fig_choropleth 
 
+
+@app.callback(
+    Output('image_wordcloud', 'src'), 
+    [Input('image_wordcloud', 'id')])
+def make_image(b):
+    text = str(df['motivation'].values)
+    img = BytesIO()
+    plot_wordcloud(text).save(img, format='PNG')
+    return 'data:image/png;base64,{}'.format(base64.b64encode(img.getvalue()).decode())
 
 
 # Helpful for debugging (delete when the app is ready)

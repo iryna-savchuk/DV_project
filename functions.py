@@ -7,6 +7,7 @@ import plotly.graph_objects as go
 
 import geojson
 import country_converter as coco # to convert and match country names
+from wordcloud import WordCloud, STOPWORDS
 
 path = 'data/'
 
@@ -36,3 +37,10 @@ def make_density_df(df):
     df_density['iso-a3'] = cc.convert(df_density['iso-a2'], to='ISO3')
     
     return df_density
+
+
+def plot_wordcloud(text):
+    stopwords = set(STOPWORDS)
+    wc = WordCloud(stopwords=stopwords,
+                   background_color='white', colormap='copper').generate(text) # width=480, height=360
+    return wc.to_image()
