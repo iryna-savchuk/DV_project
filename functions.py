@@ -42,5 +42,5 @@ def make_density_df(df):
 def plot_wordcloud(text):
     stopwords = set(STOPWORDS)
     wc = WordCloud(stopwords=stopwords,
-                   background_color='white', colormap='copper').generate(text) # width=480, height=360
+                   background_color='white', colormap='copper').generate(text) #width=480, height=360
     return wc.to_image()
