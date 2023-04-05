@@ -25,40 +25,6 @@ category_options = ['All categories', 'Physics', 'Chemistry', 'Medicine', 'Liter
 #### Building Graphs ######
 ###########################
 
-#=======================================
-#========== Age Histogram ==============
-#=======================================
-
-data_hist_age = dict(type='histogram', 
-                     x=df['prizeAge'], 
-                     marker=dict(color='#a57a50'),
-                     hovertemplate='Age when won Prize: %{x} <br>'+'Number od winners: %{y}<br><extra></extra>')
-
-layout_hist_age = dict(title=dict(text='Ages Distribution'),
-                   plot_bgcolor='#fcf2bf')
-
-fig_hist_age = go.Figure(data=data_hist_age, layout=layout_hist_age)
-fig_hist_age.update_yaxes(showline=True, linewidth=2, linecolor='#674e04', gridcolor='#a57a50')
-fig_hist_age.update_xaxes(showline=True, linewidth=2, linecolor='#674e04')
-
-#=======================================
-#======= Age by Gender Histogram ======= 
-#=======================================
-
-# Filter data by gender
-male_data = df.loc[df['gender'] == 'male', 'prizeAge']
-female_data = df.loc[df['gender'] == 'female', 'prizeAge']
-
-# Create traces for each group
-male_hist = go.Histogram(x=male_data, name='Male', marker=dict(color='#333F44'))
-female_hist = go.Histogram(x=female_data, name='Female', marker=dict(color='#37AA9C'))
-# Create layout
-layout = go.Layout(title=dict(text='Ages Distribution by Gender'), 
-                   paper_bgcolor='rgba(0,0,0,0)', 
-                   plot_bgcolor='rgba(0,0,0,0)')
-# Create figure 
-fig_hist_age_by_gender = go.Figure(data=[male_hist, female_hist], layout=layout)
-
 #=================================
 #======= Category Barchart ======= 
 #=================================
@@ -152,49 +118,48 @@ male = df_gender_year['male']*(-1)
 # Creating instance of the figure
 #fig_bar_gender = go.Figure()
 fig_bar_gender = make_subplots(rows=1, cols=2, specs=[[{}, {}]], 
-                               shared_yaxes=True, horizontal_spacing=0.05,
-                               )
+                               shared_yaxes=True, horizontal_spacing=0,
+                               subplot_titles = ('Males', 'Females'))
   
 # Adding Male data to the figure
 fig_bar_gender.add_trace(go.Bar(y=year, x=male, 
                          name='Male', orientation='h',
-                         marker=dict(color='#83531b'),
+                         marker=dict(color='#c66e00'),
                          hovertemplate='Year: %{y} <br>'+'Males: %{x} <br><extra></extra>',
                          ), 1, 1)
 
 # Adding Female data to the figure
 fig_bar_gender.add_trace(go.Bar(y=year, x=female,
-                        name='Female', orientation='h',
-                        marker=dict(color='#cb7e1f'),
-                        hovertemplate='Year: %{y} <br>'+'Females: %{x} <br><extra></extra>',
-                        ), 1, 2)
+                         name='Female', 
+                         orientation='h',
+                         marker=dict(color='#a58a89'),
+                         hovertemplate='Year: %{y} <br>'+'Females: %{x} <br><extra></extra>',
+                         ), 1, 2)
     
 # Updating the layout for our graph
-fig_bar_gender.update_layout(title = 'Gender by Year',
-                 title_font_size = 22, barmode = 'overlay',
-                 bargap = 0.1, bargroupgap = 0,
+fig_bar_gender.update_layout(#title='Gender by Year',
+                 barmode = 'overlay',
+                 bargap = 0.2, bargroupgap = 0,
                  xaxis = dict(tickmode = 'array',
                               tickvals = [-14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1],
                                           #0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
                               ticktext = [14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
                                           #0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
-                              title = 'Male',
-                              title_font_size = 15),
+                            ),
                 xaxis2 = dict(range=[0, 14],
                               tickvals = [#-14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1,
                                           1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
                               ticktext = [#14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,
                                           1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
-                              title = 'Female',
-                              title_font_size = 15),
+                            ),
 
-                yaxis=dict(side='right',
+                yaxis=dict(#side='right',
                            tickvals = [1901, 1911, 1921, 1931, 1941, 1951, 1961, 1971, 1981, 1991, 2001, 2011, 2021],
                            ticktext = [1901, 1911, 1921, 1931, 1941, 1951, 1961, 1971, 1981, 1991, 2001, 2011, 2021],
                            autorange="reversed"
                         ),
-
-                plot_bgcolor='#fbe9d9'
+                plot_bgcolor='#fbe9d9',
+                showlegend=False,
                 )
 
 # Make a horizontal highlight section
@@ -207,6 +172,26 @@ fig_bar_gender.add_hrect(y0=1939, y1=1945, row=1, col=2,
                 annotation_font_color="Black",
                 fillcolor="Grey", opacity=0.25)
 
+#=================================================
+#======= Histogram: Age when prize awarded ======= 
+#=================================================
+fig_hist_age = px.histogram(df[df['gender']!='org'], 
+                            x='prizeAge', 
+                            color='gender', 
+                            marginal = 'box', # or violin, rug, box
+                            nbins=90,
+                            color_discrete_sequence=['#e4a76c', '#877769'])
+
+fig_hist_age.update_layout(
+                           plot_bgcolor='rgba(0,0,0,0)',
+                           xaxis_title="Age", 
+                           yaxis_title="Number of Laureates",
+                           margin={"r":0,"t":0,"l":0,"b":0},
+                           legend_title_text = "",
+                           legend=dict(x=1, y=0.5, itemclick='toggleothers'),
+                           ) 
+
+fig_hist_age.update_traces(hovertemplate="<br>".join(["Age award received: %{x}","Number of Laureates: %{y}",]))
 #==============================
 #======= Choropleth Map ======= 
 #==============================
@@ -316,7 +301,7 @@ app.layout =  html.Div([
         #General Nobel Prize information
         html.Div(
             [
-                html.H6("General Nobel Prize information", style={"margin-top": "0","font-weight": "bold","text-align": "center"}), 
+                html.H5("General Nobel Prize information", style={"margin-top": "0","font-weight": "bold","text-align": "center"}), 
                 html.Div([dcc.Graph(id="fig_sunburst", figure=fig_sunburst)], className="sixish columns pretty_container"),
                 html.Div([
                     dcc.Markdown("A person or organisation awarded the Nobel Prize is called Nobel Prize **laureate**. Between 1901 and 2022, 615 Nobel Prizes were awarded to 989 laureates."),
@@ -329,22 +314,31 @@ app.layout =  html.Div([
         ),
         #html.Div(style={'margin-top': 50}), 
 
+        #Demographic information
+        html.Div([
+            html.H5("Demographic Details", style={"margin-top": "0","font-weight": "bold","text-align": "center"}), 
+            
+            html.Div([
+                html.P("The Nobel Prize is an international award administered by the Nobel Foundation in Stockholm, Sweden, and based on the fortune of Alfred Nobel, Swedish inventor and entrepreneur. In 1968, Sveriges Riksbank established The Sveriges Riksbank Prize in Economic Sciences in Memory of Alfred Nobel. Each prize consists of a medal, a personal diploma, and a cash award.",
+                    ),
+                html.H6("Gender Gap", style={"margin-top": "0", "text-align": "center"}),
+                html.Div([dcc.Graph(id="fig_bar_gender", figure=fig_bar_gender)], className="ten columns"),
+                ], className ="almost all columns"),
 
-       html.Div(
-            [
-                html.H6("Huge Gender Gap", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),          
+            html.Div([
+                html.H6("Ages of the Nobel Prize Laureates", style={"margin-top": "0", "text-align": "center"}),
                 html.Div([
-                    html.P("Some text here, some more text, more text, more text, even more more more text.\
-                            Some text here, some more text, more text, more text, even more more more text.\
-                            Some text here, some more text, more text, more text, even more more more text.\
-                            Some text here, some more text, more text, more text, even more more more text."),
-                    ],
-                    className="two columns"
-                ),
-                html.Div([dcc.Graph(id="fig_bar_gender", figure=fig_bar_gender)], className="nine columns"),
-            ],
-            className="row pretty_container",
-        ),
+                    dcc.Markdown("Some text here, some more text, more text, more text, even more more more text.\
+                                Some text here, some more text, more text, more text, even more more more text.\
+                                Some text here, some more text, more text, more text, even more more more text.\
+                                Some text here, some more text, more text, more text, even more more more text.\
+                                Some text here, some more text, more text, more text, even more more more text.\
+                                Some text here, some more text, more text, more text, even more more more text."),
+                    ], className="two columns pretty_container"),
+                html.Div([
+                    dcc.Graph(id="fig_hist_age", figure=fig_hist_age)], className="eight columns pretty_container"),
+            ]),
+        ], className="row pretty_container" ),
 
         # "Nobel Prizes Distribution by Country"
         html.Div(
@@ -413,18 +407,6 @@ app.layout =  html.Div([
             className="row pretty_container",
         ),
 
-        html.Div(
-            [
-                html.H6("DRAFT General Nobel Prize information", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
-                html.P("The Nobel Prize is an international award administered by the Nobel Foundation in Stockholm, Sweden, and based on the fortune of Alfred Nobel, Swedish inventor and entrepreneur. In 1968, Sveriges Riksbank established The Sveriges Riksbank Prize in Economic Sciences in Memory of Alfred Nobel, founder of the Nobel Prize. Each prize consists of a medal, a personal diploma, and a cash award.", 
-                    className="control_label",style={"text-align": "justify"}),
-                html.P("A person or organisation awarded the Nobel Prize is called Nobel Prize laureate. The word “laureate” refers to being signified by the laurel wreath. In ancient Greece, laurel wreaths were awarded to victors as a sign of honour.", 
-                    className="control_label",style={"text-align": "justify"}),
-                html.Div([dcc.Graph(id="fig_hist_age", figure=fig_hist_age)], className="pretty_container five columns"),
-                html.Div([dcc.Graph(id="fig_bar_category", figure=fig_bar_category)], className="pretty_container five columns"),
-            ],
-            className="row pretty_container",
-        ),
     ]), # Main Body Div --end
 
 
