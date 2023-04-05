@@ -173,26 +173,6 @@ fig_bar_gender.add_hrect(y0=1939, y1=1945, row=1, col=2,
                 annotation_font_color="Black",
                 fillcolor="Grey", opacity=0.25)
 
-#=================================================
-#======= Histogram: Age when prize awarded ======= 
-#=================================================
-fig_hist_age = px.histogram(df[df['gender']!='org'], 
-                            x='prizeAge', 
-                            color='gender', 
-                            marginal = 'box', # or violin, rug, box
-                            nbins=90,
-                            color_discrete_sequence=['#e4a76c', '#877769'])
-
-fig_hist_age.update_layout(
-                           plot_bgcolor='rgba(0,0,0,0)',
-                           xaxis_title="Age", 
-                           yaxis_title="Number of Laureates",
-                           margin={"r":0,"t":0,"l":0,"b":0},
-                           legend_title_text = "",
-                           legend=dict(x=1, y=0.5, itemclick='toggleothers'),
-                           ) 
-
-fig_hist_age.update_traces(hovertemplate="<br>".join(["Age award received: %{x}","Number of Laureates: %{y}",]))
 #==============================
 #======= Choropleth Map ======= 
 #==============================
@@ -309,6 +289,12 @@ app.layout =  html.Div([
                     html.P("The Nobel Prize recognises the highest achievement in 6 categories: Medicine, Physics, Chemistry, Literature, Peace,  Economics"),
                     ], className="fivish columns pretty_container"),
                 html.Div([html.Img(id="image_wordcloud", className="fivish columns pretty_container")]),
+                dcc.RadioItems(
+                                id='radio_category_general',
+                                options= category_options,
+                                value=default_category,
+                                labelStyle={'display': 'block', "text-align": "justify"}      
+                            ),
                 html.Div([dcc.Graph(id="fig_scatter", figure=fig_scatter)], className="eleven columns pretty_container"),
             ],
             className="row pretty_container",
@@ -319,13 +305,15 @@ app.layout =  html.Div([
         html.Div([
             html.H5("Demographic Details", style={"margin-top": "0","font-weight": "bold","text-align": "center"}), 
             
+            # Gender Info Div
             html.Div([
                 html.P("The Nobel Prize is an international award administered by the Nobel Foundation in Stockholm, Sweden, and based on the fortune of Alfred Nobel, Swedish inventor and entrepreneur. In 1968, Sveriges Riksbank established The Sveriges Riksbank Prize in Economic Sciences in Memory of Alfred Nobel. Each prize consists of a medal, a personal diploma, and a cash award.",
                     ),
                 html.H6("Gender Gap", style={"margin-top": "0", "text-align": "center"}),
-                html.Div([dcc.Graph(id="fig_bar_gender", figure=fig_bar_gender)], className="ten columns"),
+                html.Div([dcc.Graph(id="fig_bar_gender", figure=fig_bar_gender)], className="eleven columns pretty_container"),
                 ], className ="almost all columns"),
 
+            # Age Info Div
             html.Div([
                 html.H6("Ages of the Nobel Prize Laureates", style={"margin-top": "0", "text-align": "center"}),
                 
@@ -343,36 +331,41 @@ app.layout =  html.Div([
                                 value=default_category,
                                 labelStyle={'display': 'block', "text-align": "justify"}      
                             ),
-                    html.Div(
-                        [
-                            #html.P(id="max_age_text"), html.P("Maximum",style={"text-align": "center","font-weight":"bold"}),
-                            html.P(id="max_age",style={"text-align": "center"}),
-                            html.P(id="max_name",style={"text-align": "center"}),
-                            html.P(id="max_year",style={"text-align": "center"}),
-                        ],
-                        className="mini_container",
-                        id="max_age_container",
-                    ),
-                    html.Div(
-                        [
-                            #html.P(id="min_age_text"), html.P("Maximum",style={"text-align": "center","font-weight":"bold"}),
-                            html.P(id="min_age",style={"text-align": "center"}),
-                            html.P(id="min_name",style={"text-align": "center"}),
-                            html.P(id="min_year",style={"text-align": "center"}),
-                        ],
-                        className="mini_container",
-                        id="min_age_container",
-                    ),
                 ],
-                className="no_border_container four columns",
+                className="mini_container two columns",
                 #id="cross-filter-options",
                 style={"text-align": "justify"},
-            ),
+                ),
 
             html.Div([
-                dcc.Graph(id="fig_hist_age", figure=fig_hist_age)], className="sixish columns pretty_container"
+                #dcc.Graph(id="fig_hist_age", figure=fig_hist_age)], className="sixish columns pretty_container"
+                dcc.Graph(id="fig_hist_age")], className="sixish columns"       
                 ),
             ]),
+            html.Div([
+                html.Div(
+                    [
+                        html.P("Maximum Age Info",style={"text-align": "center","font-weight":"bold"}),
+                        html.P(id="max_age",style={"text-align": "center"}),
+                        html.P(id="max_name",style={"text-align": "center"}),
+                        html.P(id="max_year",style={"text-align": "center"}),
+                    ],
+                    className="pretty_container",
+                    id="max_age_container",
+                ),
+                html.Div(
+                    [
+                        html.P("Minimum Age Info",style={"text-align": "center","font-weight":"bold"}),
+                        html.P(id="min_age",style={"text-align": "center"}),
+                        html.P(id="min_name",style={"text-align": "center"}),
+                        html.P(id="min_year",style={"text-align": "center"}),
+                    ],
+                    className="pretty_container almost all columns",
+                    id="min_age_container",
+                ),
+                ],
+                className="three columns",
+            ),
         ], className="row pretty_container"),
 
         # "Geographical Distribution of Nobel Prizes Winners"
@@ -480,18 +473,19 @@ app.layout =  html.Div([
 #### Callbacks ######
 #####################
 
-################################### 1. 
+################################### 1. Histogram: Age when prize awarded #################
 @app.callback(
     [
-        Output("max_age", "children"),
-        Output("max_name", "children"),
-        Output("max_year", "children"),
-        Output("min_age", "children"),
-        Output("min_name", "children"),
-        Output("min_year", "children"),
+        Output('max_age','children'),
+        Output('max_name','children'),
+        Output('max_year','children'),
+        Output('min_age','children'),
+        Output('min_name','children'),
+        Output('min_year','children'),
+        Output('fig_hist_age','figure')
     ],
     [
-        Input("radio_category", "value"),
+        Input('radio_category','value'),
     ]
 )
 def get_ages(chosen_category):
@@ -513,10 +507,28 @@ def get_ages(chosen_category):
     min_name = chosen_df.loc[id_min,'firstname'] + ' ' + chosen_df.loc[id_min,'surname']
     min_year = chosen_df.loc[id_min,'year']
 
-    return "Maximum Age: " + str(max_age), "Laureate: " +str(max_name), "Year: " + str(max_year), \
-           "Minimum Age: " + str(min_age), "Laureate: " + str(min_name), "Year: " + str(min_year)
+    ######### Histogram: Age when prize awarded #########
+    fig_hist_age = px.histogram(chosen_df, 
+                            x='prizeAge', 
+                            color='gender', 
+                            marginal = 'box', # or violin, rug, box
+                            nbins=90,
+                            color_discrete_sequence=['#e4a76c', '#877769'])
+    fig_hist_age.update_layout(
+                           plot_bgcolor='rgba(0,0,0,0)',
+                           xaxis_title="Age", 
+                           yaxis_title="Number of Laureates",
+                           margin={"r":0,"t":0,"l":0,"b":0},
+                           legend_title_text = "",
+                           legend=dict(x=1, y=0.5, itemclick='toggleothers'),
+                           ) 
+    fig_hist_age.update_traces(hovertemplate="<br>".join(["Age award received: %{x}","Number of Laureates: %{y}",]))
 
-################################### 1. choropleth callback #####################################
+    return "Maximum Age: " + str(max_age), "Laureate: " +str(max_name), "Year: " + str(max_year), \
+           "Minimum Age: " + str(min_age), "Laureate: " + str(min_name), "Year: " + str(min_year), \
+           fig_hist_age
+
+################################ 2. Choropleth Map callback #####################################
 @app.callback(
     Output('choropleth-graph', 'figure'),
     Input('scale-type', 'value'),
@@ -566,6 +578,22 @@ def update_colorpleth(radiovalue, slidervalue):
 
 ################################### 2. WorldCLoud callback #####################################
 @app.callback(
+    Output('image_wordcloud','src'),
+    Input('radio_category_general','value')
+)
+def make_image(chosen_category):
+    # Filter by chosen category
+    if chosen_category==default_category:
+        chosen_df = df.copy()
+    else:
+        chosen_df = df.loc[df['category']==chosen_category.lower()]  
+    text = str(chosen_df['motivation'].values)
+    img = BytesIO()
+    plot_wordcloud(text).save(img, format='PNG')
+    return 'data:image/png;base64,{}'.format(base64.b64encode(img.getvalue()).decode())
+
+"""
+@app.callback(
     Output('image_wordcloud', 'src'), 
     [Input('image_wordcloud', 'id')])
 def make_image(b):
@@ -573,7 +601,7 @@ def make_image(b):
     img = BytesIO()
     plot_wordcloud(text).save(img, format='PNG')
     return 'data:image/png;base64,{}'.format(base64.b64encode(img.getvalue()).decode())
-
+"""
 
 # Helpful for debugging (delete when the app is ready)
 """ 
