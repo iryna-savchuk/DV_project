@@ -278,30 +278,43 @@ app.layout =  html.Div([
             className="row pretty_container",
         ),
 
-
         #General Nobel Prize information
         html.Div(
             [
-                html.H5("General Nobel Prize information", style={"margin-top": "0","font-weight": "bold","text-align": "center"}), 
-                html.Div([dcc.Graph(id="fig_sunburst", figure=fig_sunburst)], className="sixish columns pretty_container"),
+                html.H6("General Nobel Prize information", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
+                html.Div([dcc.Graph(id="fig_sunburst", figure=fig_sunburst)], className="pretty_container four columns"),
+                
                 html.Div([
+                    html.Div(style={'margin-top': 50}),
                     dcc.Markdown("A person or organisation awarded the Nobel Prize is called Nobel Prize **laureate**. Between 1901 and 2022, 615 Nobel Prizes were awarded to 989 laureates."),
-                    html.P("The Nobel Prize recognises the highest achievement in 6 categories: Medicine, Physics, Chemistry, Literature, Peace,  Economics"),
-                    ], className="fivish columns pretty_container"),
-                html.Div([html.Img(id="image_wordcloud", className="fivish columns pretty_container")]),
-                dcc.RadioItems(
-                                id='radio_category_general',
-                                options= category_options,
-                                value=default_category,
-                                labelStyle={'display': 'block', "text-align": "justify"}      
-                            ),
-                html.Div([dcc.Graph(id="fig_scatter", figure=fig_scatter)], className="eleven columns pretty_container"),
+                    html.P("The Nobel Prize recognises the highest achievement in six categories: Medicine, Physics, Chemistry, Literature, Peace,  Economics"),
+                    
+                    html.Div(style={'margin-top': 20}),
+                    html.Div([
+                        html.P("Motivation for the Award", 
+                                style={"font-weight": "bold","text-align": "center"}),
+                        html.P("The below WordCloud outlines words that appear more frequently in the textual motivation for the Nobel Prize awards (can be filtered by research category):"),
+                        html.Div([html.Img(id="image_wordcloud")], 
+                                className="eight columns"),
+                        html.Div(
+                            [
+                                dcc.RadioItems(
+                                    id='radio_category_general',
+                                    options= category_options,
+                                    value=default_category,
+                                    labelStyle={'display': 'block'},
+                                    style={"padding-left": "5%"}),
+                            ],className="three columns"
+                        ),
+                        ], 
+                    ),
+                    ], className="sixish columns"
+                ),   
             ],
             className="row pretty_container",
         ),
-        #html.Div(style={'margin-top': 50}), 
 
-        #Demographic information
+        # Demographic information
         html.Div([
             html.H5("Demographic Details", style={"margin-top": "0","font-weight": "bold","text-align": "center"}), 
             
@@ -368,10 +381,10 @@ app.layout =  html.Div([
             ),
         ], className="row pretty_container"),
 
-        # "Geographical Distribution of Nobel Prizes Winners"
+        # Geographical Distribution of Nobel Prizes Winners
         html.Div(
             [
-                html.H6("Nobel Prizes Distribution by Country", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),     
+                html.H6("Geographical Distribution of Nobel Prizes Winners", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),     
                 html.Div(style={'margin-top': 30}), 
 
                 html.Div([
