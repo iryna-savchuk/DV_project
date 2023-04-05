@@ -312,7 +312,7 @@ app.layout =  html.Div([
                     ),
                     ], className="container sixish columns"
                 ),
-
+                html.Div([dcc.Graph(id="fig_scatter", figure=fig_scatter)], className="pretty_container eleven columns"),
             ],
             className="row pretty_container",
         ),
