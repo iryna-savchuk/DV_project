@@ -138,7 +138,8 @@ fig_bar_gender.add_trace(go.Bar(y=year, x=female,
                          ), 1, 2)
     
 # Updating the layout for our graph
-fig_bar_gender.update_layout(#title='Gender by Year',
+fig_bar_gender.update_layout(#title='Annual Number of Awarded Individuals, split by Gender',
+                 title_x=0.5, title_y = 0,
                  barmode = 'overlay',
                  bargap = 0.2, bargroupgap = 0,
                  xaxis = dict(tickmode = 'array',
@@ -285,7 +286,7 @@ app.layout =  html.Div([
                 html.Div([dcc.Graph(id="fig_sunburst", figure=fig_sunburst)], className="pretty_container four columns"),
                 
                 html.Div([
-                    html.Div(style={'margin-top': 50}),
+                    html.Div(style={'margin-top': 20}),
                     dcc.Markdown("A person or organisation awarded the Nobel Prize is called Nobel Prize **laureate**. Between 1901 and 2022, 615 Nobel Prizes were awarded to 989 laureates."),
                     html.P("The Nobel Prize recognises the highest achievement in six categories: Medicine, Physics, Chemistry, Literature, Peace,  Economics"),
                     
@@ -294,141 +295,118 @@ app.layout =  html.Div([
                         html.P("Motivation for the Award", 
                                 style={"font-weight": "bold","text-align": "center"}),
                         html.P("The below WordCloud outlines words that appear more frequently in the textual motivation for the Nobel Prize awards (can be filtered by research category):"),
-                        html.Div([html.Img(id="image_wordcloud")], 
-                                className="eight columns"),
+                         html.Div(style={'margin-top': 20}),
+                        html.Div([html.Img(id="image_wordcloud", style={'position':'relative', 'width':'100%'})],
+                                className="eight columns bare_container"),
                         html.Div(
                             [
                                 dcc.RadioItems(
                                     id='radio_category_general',
                                     options= category_options,
                                     value=default_category,
-                                    labelStyle={'display': 'block'},
-                                    style={"padding-left": "5%"}),
-                            ],className="three columns"
+                                    labelStyle={'display':'block'},
+                                    ),
+                            ],className="three columns bare_container"
                         ),
                         ], 
                     ),
-                    ], className="sixish columns"
-                ),   
+                    ], className="container sixish columns"
+                ),
+
             ],
             className="row pretty_container",
         ),
 
         # Demographic information
         html.Div([
-            html.H5("Demographic Details", style={"margin-top": "0","font-weight": "bold","text-align": "center"}), 
-            
+            html.H5("Demographic Information about Individual Laureates", style={"margin-top": "0","font-weight": "bold","text-align": "center"}), 
             # Gender Info Div
             html.Div([
-                html.P("The Nobel Prize is an international award administered by the Nobel Foundation in Stockholm, Sweden, and based on the fortune of Alfred Nobel, Swedish inventor and entrepreneur. In 1968, Sveriges Riksbank established The Sveriges Riksbank Prize in Economic Sciences in Memory of Alfred Nobel. Each prize consists of a medal, a personal diploma, and a cash award.",
-                    ),
-                html.H6("Gender Gap", style={"margin-top": "0", "text-align": "center"}),
-                html.Div([dcc.Graph(id="fig_bar_gender", figure=fig_bar_gender)], className="eleven columns pretty_container"),
-                ], className ="almost all columns"),
+                html.H6("Genders of the Nobel Prize Laureates", 
+                        style={"margin-top": "0","text-align": "center"}),
+                html.Div([
+                    html.Div([dcc.Graph(id="fig_bar_gender", figure=fig_bar_gender)]),
+                    ], className ="eight columns pretty_container"),
+                html.Div([
+                    #html.Div(style={'margin-top': 70})
+                    html.P("More than 90 percent of Nobel Prize winners have been men."),
+                    html.P("Last year, in 2022, two out of the fourteen Nobel laureates were women."),
+                    html.P("The graph illustrates annual number of the awarded individuals split by gender. As can be seen, the situation with gender disproportion becomes a bit better with the time."),
+                    html.P("One more thing is noticeable on the graph - the gap in the 1940-th. It turned out, during the Second World War, no Nobel Peace Prize was awarded. Under the German occupation of Norway from 1940 to 1945 normal political activity was banned, and there was little the Nobel Committee of the Norwegian Storting could do except postpone the prize awards and defend its integrity.")
+                    ], className ="three columns"),
+                ],
+                className ="twelve columns pretty_container"
+            ),
+
+            
 
             # Age Info Div
             html.Div([
-                html.H6("Ages of the Nobel Prize Laureates", style={"margin-top": "0", "text-align": "center"}),
+                html.H6("Ages of the Nobel Prize Laureates", style={"margin-top":"50","text-align": "center"}),
+               # html.Div(style={'margin-top': 50}),
+                html.Div([
+                    dcc.Graph(id="fig_hist_age")], className="eight columns pretty_container"       
+                    ),
+                ]),
                 
                 html.Div([
-                    html.P(
-                        "The texts text some text here. Here and there 122 here 123 to the end." 
-                        "Some more text to see hos it looks like.  Hoefully, looks good.",
-                        className="control_label",style={"text-align": "justify"}
+                    html.Div(
+                        [
+                            html.P("Maximum Age",style={"text-align": "center","font-weight":"bold"}),
+                            html.P(id="max_age",style={"text-align": "center"}),
+                            html.P(id="max_name",style={"text-align": "center"}),
+                            html.P(id="max_year",style={"text-align": "center"}),
+                        ],
+                        className="pretty_container",
+                        id="max_age_container",
                     ),
+                    html.Div(
+                        [
+                            html.P("Minimum Age",style={"text-align": "center","font-weight":"bold"}),
+                            html.P(id="min_age",style={"text-align": "center"}),
+                            html.P(id="min_name",style={"text-align": "center"}),
+                            html.P(id="min_year",style={"text-align": "center"}),
+                        ],
+                        className="pretty_container",
+                        id="min_age_container",
+                    ),
+                    ], className="three columns",
+                ),
+
+                html.Div([
                     html.P(),
-                    html.P("Select Research Category", className="control_label",style={"text-align": "center","font-weight":"bold"}),
+                    #html.P("Select Research Category:", className="control_label",style={"text-align": "center","font-weight":"bold"}),
                     dcc.RadioItems(
                                 id='radio_category',
                                 options= category_options,
                                 value=default_category,
-                                labelStyle={'display': 'block', "text-align": "justify"}      
+                                labelStyle={'display': 'inline',}# "text-align": "justify"}      
                             ),
-                ],
-                className="mini_container two columns",
-                #id="cross-filter-options",
-                style={"text-align": "justify"},
-                ),
-
-            html.Div([
-                #dcc.Graph(id="fig_hist_age", figure=fig_hist_age)], className="sixish columns pretty_container"
-                dcc.Graph(id="fig_hist_age")], className="sixish columns"       
-                ),
-            ]),
-            html.Div([
-                html.Div(
-                    [
-                        html.P("Maximum Age Info",style={"text-align": "center","font-weight":"bold"}),
-                        html.P(id="max_age",style={"text-align": "center"}),
-                        html.P(id="max_name",style={"text-align": "center"}),
-                        html.P(id="max_year",style={"text-align": "center"}),
                     ],
-                    className="pretty_container",
-                    id="max_age_container",
+                    className="eight columns",
+                    style={"text-align": "center"},
                 ),
-                html.Div(
-                    [
-                        html.P("Minimum Age Info",style={"text-align": "center","font-weight":"bold"}),
-                        html.P(id="min_age",style={"text-align": "center"}),
-                        html.P(id="min_name",style={"text-align": "center"}),
-                        html.P(id="min_year",style={"text-align": "center"}),
-                    ],
-                    className="pretty_container almost all columns",
-                    id="min_age_container",
-                ),
-                ],
-                className="three columns",
-            ),
-        ], className="row pretty_container"),
+            ], className="row pretty_container"),
 
         # Geographical Distribution of Nobel Prizes Winners
         html.Div(
             [
-                html.H6("Geographical Distribution of Nobel Prizes Winners", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),     
-                html.Div(style={'margin-top': 30}), 
-
+                html.H6("Geographical Origin of Nobel Prizes Winners", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),     
+                
                 html.Div([
                     # Div contining choropleth graph
                     html.Div(
                         [dcc.Graph(id='choropleth-graph', figure=fig_choropleth)],
-                        className="no_border_container nine columns",
+                        className="pretty_container nine columns",
                     ),
 
                     # Div containg selection options
-                    html.Div(
-                        [
-                        html.Div([
-                            html.P("Select Gender", className="control_label", style={"font-weight": "bold", "text-align": "left"}),
-                            dcc.Dropdown(
-                                id="chosen-gender",
-                                options=[{"label": i, "value": i} for i in ['Male', 'Female', 'Both']],
-                                value="Both")
-                            ], className="container twelve columns"
-                        ),
-
-                        #html.Div(style={'margin-top': 100}),
-
-                        html.Div([
-                            html.P("Select Category", className="control_label", style={"font-weight": "bold", "text-align": "left"}),
-                            dcc.Dropdown(
-                                id="chosen-category",
-                                options=[{"label": i, "value": i} for i in category_options],
-                                value=default_category)
-                            ], className="container twelve columns",  style={'margin-top': 100}
-                        ),
-
-                        html.Div([dcc.RadioItems(id='scale-type',
+                    html.Div([dcc.RadioItems(id='scale-type',
                                     options=[{'label': i, 'value': i} for i in ['Log Scale', 'Absolute Count']],
                                     value='Log Scale',
-                                    #labelStyle={'display': 'inline-block'}, #,className="pretty_container four columns",
+                                    labelStyle={'display': 'inline-block'},
                                     style={"float": "right"})
-                                    ], 
-                                className="container twelve columns",
-                                style={'margin-top': 100}
-                                #style={'display': 'flex', 'vertical-align':'bottom'}
-                        ),    
-
-                        ], className="pretty_container two columns", 
+                            ], className="no_border_container two columns", 
                     )
                 ],className="row"),
 
@@ -537,8 +515,8 @@ def get_ages(chosen_category):
                            ) 
     fig_hist_age.update_traces(hovertemplate="<br>".join(["Age award received: %{x}","Number of Laureates: %{y}",]))
 
-    return "Maximum Age: " + str(max_age), "Laureate: " +str(max_name), "Year: " + str(max_year), \
-           "Minimum Age: " + str(min_age), "Laureate: " + str(min_name), "Year: " + str(min_year), \
+    return str(max_age)+" years old", str(max_name), "Year: " + str(max_year), \
+           str(min_age)+" years old", str(min_name), "Year: " + str(min_year), \
            fig_hist_age
 
 ################################ 2. Choropleth Map callback #####################################
