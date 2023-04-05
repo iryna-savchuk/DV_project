@@ -20,6 +20,7 @@ df = pd.read_csv(path + 'merged.csv')
 
 # Pre-defining the options for filtering menu in Map
 category_options = ['All categories', 'Physics', 'Chemistry', 'Medicine', 'Literature', 'Peace', 'Economics']
+default_category = "All categories"
 
 ###########################
 #### Building Graphs ######
@@ -327,20 +328,54 @@ app.layout =  html.Div([
 
             html.Div([
                 html.H6("Ages of the Nobel Prize Laureates", style={"margin-top": "0", "text-align": "center"}),
+                
                 html.Div([
-                    dcc.Markdown("Some text here, some more text, more text, more text, even more more more text.\
-                                Some text here, some more text, more text, more text, even more more more text.\
-                                Some text here, some more text, more text, more text, even more more more text.\
-                                Some text here, some more text, more text, more text, even more more more text.\
-                                Some text here, some more text, more text, more text, even more more more text.\
-                                Some text here, some more text, more text, more text, even more more more text."),
-                    ], className="two columns pretty_container"),
-                html.Div([
-                    dcc.Graph(id="fig_hist_age", figure=fig_hist_age)], className="eight columns pretty_container"),
-            ]),
-        ], className="row pretty_container" ),
+                    html.P(
+                        "The texts text some text here. Here and there 122 here 123 to the end." 
+                        "Some more text to see hos it looks like.  Hoefully, looks good.",
+                        className="control_label",style={"text-align": "justify"}
+                    ),
+                    html.P(),
+                    html.P("Select Research Category", className="control_label",style={"text-align": "center","font-weight":"bold"}),
+                    dcc.RadioItems(
+                                id='radio_category',
+                                options= category_options,
+                                value=default_category,
+                                labelStyle={'display': 'block', "text-align": "justify"}      
+                            ),
+                    html.Div(
+                        [
+                            #html.P(id="max_age_text"), html.P("Maximum",style={"text-align": "center","font-weight":"bold"}),
+                            html.P(id="max_age",style={"text-align": "center"}),
+                            html.P(id="max_name",style={"text-align": "center"}),
+                            html.P(id="max_year",style={"text-align": "center"}),
+                        ],
+                        className="mini_container",
+                        id="max_age_container",
+                    ),
+                    html.Div(
+                        [
+                            #html.P(id="min_age_text"), html.P("Maximum",style={"text-align": "center","font-weight":"bold"}),
+                            html.P(id="min_age",style={"text-align": "center"}),
+                            html.P(id="min_name",style={"text-align": "center"}),
+                            html.P(id="min_year",style={"text-align": "center"}),
+                        ],
+                        className="mini_container",
+                        id="min_age_container",
+                    ),
+                ],
+                className="no_border_container four columns",
+                #id="cross-filter-options",
+                style={"text-align": "justify"},
+            ),
 
-        # "Nobel Prizes Distribution by Country"
+            html.Div([
+                dcc.Graph(id="fig_hist_age", figure=fig_hist_age)], className="sixish columns pretty_container"
+                ),
+            ]),
+        ], className="row pretty_container"),
+
+        # "Geographical Distribution of Nobel Prizes Winners"
         html.Div(
             [
                 html.H6("Nobel Prizes Distribution by Country", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),     
@@ -372,7 +407,7 @@ app.layout =  html.Div([
                             dcc.Dropdown(
                                 id="chosen-category",
                                 options=[{"label": i, "value": i} for i in category_options],
-                                value="All categories")
+                                value=default_category)
                             ], className="container twelve columns",  style={'margin-top': 100}
                         ),
 
@@ -444,6 +479,42 @@ app.layout =  html.Div([
 #####################
 #### Callbacks ######
 #####################
+
+################################### 1. 
+@app.callback(
+    [
+        Output("max_age", "children"),
+        Output("max_name", "children"),
+        Output("max_year", "children"),
+        Output("min_age", "children"),
+        Output("min_name", "children"),
+        Output("min_year", "children"),
+    ],
+    [
+        Input("radio_category", "value"),
+    ]
+)
+def get_ages(chosen_category):
+    # Filter by chosen category
+    if chosen_category==default_category:
+        chosen_df = df.loc[(df['gender']!='org')]
+    else:
+        chosen_df = df.loc[(df['gender']!='org') & (df['category']==chosen_category.lower())]
+
+    # Getting info about Max Age Individual Laureate
+    id_max = chosen_df['prizeAge'].idxmax()
+    max_age = chosen_df.loc[id_max,'prizeAge']
+    max_name = chosen_df.loc[id_max,'firstname'] + ' ' + chosen_df.loc[id_max,'surname']
+    max_year = chosen_df.loc[id_max,'year']
+
+    # Getting info about Max Age Individual Laureate
+    id_min = chosen_df['prizeAge'].idxmin()
+    min_age = chosen_df.loc[id_min,'prizeAge']
+    min_name = chosen_df.loc[id_min,'firstname'] + ' ' + chosen_df.loc[id_min,'surname']
+    min_year = chosen_df.loc[id_min,'year']
+
+    return "Maximum Age: " + str(max_age), "Laureate: " +str(max_name), "Year: " + str(max_year), \
+           "Minimum Age: " + str(min_age), "Laureate: " + str(min_name), "Year: " + str(min_year)
 
 ################################### 1. choropleth callback #####################################
 @app.callback(
