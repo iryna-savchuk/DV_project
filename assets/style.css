@@ -105,7 +105,7 @@ body {
 
 .mini_container {
   border-radius: 5px;
-  background-color: #f9f9f9;
+  background-color: #ffffff;
   margin: 10px;
   padding: 15px;
   position: relative;
@@ -754,49 +754,16 @@ there.
     margin: 0 !important;
     margin-bottom: 25px !important;
   }
-  #individual_graph,
-  #count_graph,
-  #aggregate_graph {
-    position: static !important;
-  }
   .container-display {
     display: flex;
-  }
-  #wells,
-  #gas,
-  #oil {
-    margin-right: 10px;
-  }
-
-  #wells {
-    margin-left: 0px;
-  }
-  #water {
-    margin-right: 0px;
   }
   .mini_container {
     margin-bottom: 25px !important;
     border-radius: 5px;
-    background-color: #f9f9f9;
+    background-color: #ffffff;
     padding: 15px;
     position: relative;
     box-shadow: 2px 2px 2px lightgrey;
-  }
-  #plotly-image {
-    margin-bottom: 0px !important;
-    height: 45px !important;
-  }
-  #learn-more-button {
-    margin-top: 0px !important;
-    padding: 0 10px !important;
-    font-size: 12px !important;
-  }
-  #button {
-    display: flex;
-    justify-content: center;
-  }
-  #title {
-    margin-bottom: 10px;
   }
   h3 {
     font-size: 2.5rem;

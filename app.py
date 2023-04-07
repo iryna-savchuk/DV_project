@@ -12,7 +12,7 @@ from io import BytesIO
 import base64
 
 # Importing Custom functions
-from functions import make_density_df, get_data_geo, plot_wordcloud
+from functions import make_density_df, get_data_geo, plot_wordcloud, plot_country_circle
 
 # Dataset read
 path = 'data/'
@@ -69,10 +69,10 @@ fig_sunburst = px.sunburst(sunburst_df,
 
 fig_sunburst.update_traces(hovertemplate="<b>%{label}:</b><br>%{value} Laureates<extra></extra>")
 #fig_sunburst.update_traces(insidetextorientation='horizontal')
-#fig_sunburst.update_traces(insidetextfont_size=14)
 fig_sunburst.update_traces(leaf_opacity=0.6)
-fig_sunburst.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 fig_sunburst.update_traces(textfont_size=14)
+fig_sunburst.update_traces(textinfo="label+percent parent")
+fig_sunburst.update_layout(margin={"r":5,"t":0,"l":5,"b":0})
 
 #===============================================
 #======= Scatter plot - Category by Year ======= 
@@ -100,6 +100,7 @@ layout_scatter = dict(title=dict(text='Awarded Categories by Year'),
                       plot_bgcolor='#fbe9d9')
 
 fig_scatter = go.Figure(data=data_scatter, layout=layout_scatter)
+fig_scatter.update_layout(margin={"r":20,"t":70,"l":35,"b":35})
 
 #========================================
 #======= Barchart: Gender by Year ======= 
@@ -164,6 +165,8 @@ fig_bar_gender.update_layout(#title='Annual Number of Awarded Individuals, split
                 showlegend=False,
                 )
 
+fig_bar_gender.update_layout(margin={"r":20,"t":35,"l":20,"b":15})
+
 # Make a horizontal highlight section
 fig_bar_gender.add_hrect(y0=1939, y1=1945, row=1, col=1,
                 fillcolor="Grey", opacity=0.25)
@@ -199,6 +202,37 @@ fig_choropleth = go.Figure(data=data_choropleth, layout=layout_choropleth)
 fig_choropleth.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 fig_choropleth.update_geos(showcoastlines=False)
 
+#=======================================
+#======= Barchart - Universities ======= 
+#=======================================
+df['uni_full'] = df['name'] +', ' +df['country'] 
+top_5 = df['uni_full'].value_counts().head(5)
+data = {'values': top_5.index[::-1], 'counts': top_5.values[::-1]}
+df_top_5 = pd.DataFrame(data)
+
+# Splitting column A into two columns based on comma separation
+df_top_5[['University', 'Country']] = df_top_5['values'].str.split(',', expand=True)
+
+# Dropping the original column A
+df_top_5.drop('values', axis=1, inplace=True)
+
+data_bar_uni = dict(type='bar',
+                    x=df_top_5['counts'],
+                    y=df_top_5['University'],
+                    text=df_top_5['University'],
+                    orientation='h',
+                    marker=dict(color=['#b66c05', '#a75b13', '#976a20', '#87682e', '#776837']),
+                    hovertemplate='%{y}<br>Laureates: %{x}<br>Country: %{customdata}<br><extra></extra>',
+                    customdata=df_top_5['Country'],
+                    )
+
+layout_bar_uni = dict(title=dict(text='Top 5 Universities'), 
+                      xaxis=dict(title='Number of Nobel Laureates'), 
+                      yaxis=dict(title='', showticklabels=False), 
+                      plot_bgcolor='#fbe9d9')
+
+fig_bar_uni = go.Figure(data=[data_bar_uni], layout=layout_bar_uni)
+fig_bar_uni.update_layout(margin={"r":10,"t":40,"l":10,"b":40})
 
 ##########################
 #### The APP Layout ######
@@ -225,7 +259,7 @@ app.layout =  html.Div([
                             },
                         )
                     ],
-                    className="one-third column",
+                    className="one-third column bare_container",
                 ),
 
                 html.Div(
@@ -259,7 +293,7 @@ app.layout =  html.Div([
                             },
                         )
                     ],
-                    className="one-third column",
+                    className="one-third column bare_container",
                 ),
             ],
             
@@ -295,7 +329,7 @@ app.layout =  html.Div([
                         html.P("Motivation for the Award", 
                                 style={"font-weight": "bold","text-align": "center"}),
                         html.P("The below WordCloud outlines words that appear more frequently in the textual motivation for the Nobel Prize awards (can be filtered by research category):"),
-                         html.Div(style={'margin-top': 20}),
+                        html.Div(style={'margin-top': 20}),
                         html.Div([html.Img(id="image_wordcloud", style={'position':'relative', 'width':'100%'})],
                                 className="eight columns bare_container"),
                         html.Div(
@@ -356,18 +390,21 @@ app.layout =  html.Div([
                             html.P(id="max_age",style={"text-align": "center"}),
                             html.P(id="max_name",style={"text-align": "center"}),
                             html.P(id="max_year",style={"text-align": "center"}),
+                            html.P(id="max_category",style={"text-align": "center"}),
                         ],
-                        className="pretty_container",
+                        className="mini_container",
                         id="max_age_container",
                     ),
+                    html.Div(style={'margin-top': 30}),
                     html.Div(
                         [
                             html.P("Minimum Age",style={"text-align": "center","font-weight":"bold"}),
                             html.P(id="min_age",style={"text-align": "center"}),
                             html.P(id="min_name",style={"text-align": "center"}),
                             html.P(id="min_year",style={"text-align": "center"}),
+                            html.P(id="min_category",style={"text-align": "center"}),
                         ],
-                        className="pretty_container",
+                        className="mini_container",
                         id="min_age_container",
                     ),
                     ], className="three columns",
@@ -401,12 +438,14 @@ app.layout =  html.Div([
                     ),
 
                     # Div containg selection options
-                    html.Div([dcc.RadioItems(id='scale-type',
-                                    options=[{'label': i, 'value': i} for i in ['Log Scale', 'Absolute Count']],
-                                    value='Log Scale',
-                                    labelStyle={'display': 'inline-block'},
-                                    style={"float": "right"})
-                            ], className="no_border_container two columns", 
+                    html.Div(
+                        [html.P("Select Scale", className="control_label",style={"text-align":"left","font-weight":"bold"}),
+                        dcc.RadioItems(id='scale-type',
+                            options=[{'label': i, 'value': i} for i in ['Log Scale', 'Absolute Count']],
+                            value='Log Scale',
+                            labelStyle={'display': 'inline-block'},
+                            style={"float": "right"})
+                        ], className="two columns", #style={'background-color':'#ffffff'}
                     )
                 ],className="row"),
 
@@ -425,16 +464,30 @@ app.layout =  html.Div([
             ],
             className="row pretty_container",
         ),
+    '''
+        # Additional Info on Geo
+        html.Div(
+            [
+                html.H6("General Nobel Prize information", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
+                html.Div([dcc.Graph(id="fig_bar_uni", figure=fig_bar_uni)], className="pretty_container sixish columns"),
+                #html.Div([dcc.Img(id="fig_country_circle", figure=plot_country_circle(df))], className="pretty_container fivish columns"),
+                html.Div([dcc.Graph(id="fig_country_circle")],
+                                className="eight columns bare_container"),
+            ],
+            className="row pretty_container",
+        ),
+    '''
+
 
     ]), # Main Body Div --end
 
 
-    # Footer Div: Sources and Authors
+    # Footer Div: References and Authors
     html.Div([ 
-        # Sources pretty container
+        # References pretty_container
         html.Div(
                 [
-                    html.H6("Sources", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
+                    html.H6("References", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
                     dcc.Markdown(
                         """\
                             - Inspiration #1 - "Nobel Prizes: Is there a secret formula to winning one?": https://www.bbc.com/future/article/20121008-winning-formula-for-nobel-prizes
@@ -447,11 +500,11 @@ app.layout =  html.Div([
                 className="row pretty_container",
             ),
 
-        # Authors pretty container
+        # Authors pretty_container
         html.Div(
                 [
                     html.H6("Authors", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
-                    html.P("Cátia Parrinha (m20201320@novaims.unl.pt)  -  Iryna Savchuk (m20211310@novaims.unl.pt)  -  Gueu (????@novaims.unl.pt) ", 
+                    html.P("Cátia Parrinha (m20201320@novaims.unl.pt)  -  Iryna Savchuk (m20211310@novaims.unl.pt)", 
                         style={"text-align": "center", "font-size":"10pt"}),
                 ],
                 className="row pretty_container",
@@ -491,12 +544,14 @@ def get_ages(chosen_category):
     max_age = chosen_df.loc[id_max,'prizeAge']
     max_name = chosen_df.loc[id_max,'firstname'] + ' ' + chosen_df.loc[id_max,'surname']
     max_year = chosen_df.loc[id_max,'year']
+    max_category = str(chosen_df.loc[id_max,'category']).capitalize()
 
     # Getting info about Max Age Individual Laureate
     id_min = chosen_df['prizeAge'].idxmin()
     min_age = chosen_df.loc[id_min,'prizeAge']
     min_name = chosen_df.loc[id_min,'firstname'] + ' ' + chosen_df.loc[id_min,'surname']
     min_year = chosen_df.loc[id_min,'year']
+    min_category = str(chosen_df.loc[id_min,'category']).capitalize()
 
     ######### Histogram: Age when prize awarded #########
     fig_hist_age = px.histogram(chosen_df, 
@@ -514,9 +569,10 @@ def get_ages(chosen_category):
                            legend=dict(x=1, y=0.5, itemclick='toggleothers'),
                            ) 
     fig_hist_age.update_traces(hovertemplate="<br>".join(["Age award received: %{x}","Number of Laureates: %{y}",]))
+    fig_hist_age.update_layout(margin={"r":20,"t":50,"l":20,"b":20})
 
-    return str(max_age)+" years old", str(max_name), "Year: " + str(max_year), \
-           str(min_age)+" years old", str(min_name), "Year: " + str(min_year), \
+    return str(max_age)+" years old", str(max_name), "Year: " + str(max_year) +" ("+max_category+")",\
+           str(min_age)+" years old", str(min_name), "Year: " + str(min_year) +" ("+min_category+")",\
            fig_hist_age
 
 ################################ 2. Choropleth Map callback #####################################
@@ -584,6 +640,17 @@ def make_image(chosen_category):
     return 'data:image/png;base64,{}'.format(base64.b64encode(img.getvalue()).decode())
 
 """
+
+@app.callback(
+    Output('fig_country_circle','figure'),
+    [Input('fig_country_circle', 'id')])
+def make_country_circle(b):
+    # Filter by chosen category
+    fig = plot_country_circle(df)
+    plotly_fig = mpl_to_plotly(fig)
+    return plotly_fig
+
+
 @app.callback(
     Output('image_wordcloud', 'src'), 
     [Input('image_wordcloud', 'id')])
