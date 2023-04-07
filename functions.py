@@ -43,3 +43,18 @@ def plot_wordcloud(text):
     wc = WordCloud(stopwords=stopwords,
                    background_color='white', colormap='copper').generate(text) #width=480, height=360
     return wc.to_image()
+
+
+def split_long_label(label, limit=20, separator=' '):
+    words = label.split(separator)
+    lines = []
+    current_line = ''
+    for word in words:
+        if len(current_line + word) <= limit:
+            current_line += word + separator
+        else:
+            lines.append(current_line.strip())
+            current_line = word + separator
+    if current_line:
+        lines.append(current_line.strip())
+    return '<br>'.join(lines)

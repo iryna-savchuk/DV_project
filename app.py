@@ -12,15 +12,17 @@ from io import BytesIO
 import base64
 
 # Importing Custom functions
-from functions import make_density_df, get_data_geo, plot_wordcloud
+from functions import make_density_df, get_data_geo, plot_wordcloud, split_long_label
 
 # Dataset read
 path = 'data/'
 df = pd.read_csv(path + 'merged.csv')
 
 # Pre-defining the options for filtering menu in Map
-category_options = ['All categories', 'Physics', 'Chemistry', 'Medicine', 'Literature', 'Peace', 'Economics']
-default_category = "All categories"
+category_options = ['All Categories', 'Physics', 'Chemistry', 'Medicine', 'Literature', 'Peace', 'Economics']
+default_category = "All Categories"
+science_options = ['All Sciences', 'Physics', 'Chemistry', 'Medicine', 'Economics']
+default_science = "All Sciences"
 
 ###########################
 #### Building Graphs ######
@@ -214,6 +216,7 @@ fig_choropleth = go.Figure(data=data_choropleth, layout=layout_choropleth)
 fig_choropleth.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 fig_choropleth.update_geos(showcoastlines=False)
 
+
 #=======================================
 #======= Barchart - Universities ======= 
 #=======================================
@@ -326,7 +329,7 @@ app.layout =  html.Div([
         #General Nobel Prize information
         html.Div(
             [
-                html.H6("General Nobel Prize information", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
+                html.H6("General Nobel Prize Information", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
                 html.Div([dcc.Graph(id="fig_sunburst", figure=fig_sunburst)], className="pretty_container four columns"),
                 
                 html.Div([
@@ -492,23 +495,24 @@ app.layout =  html.Div([
         # Schooling Section
         html.Div(
             [
-                html.H6("Schooling Information", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
+                html.H6("School Information", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
                 html.Div(
                     [
-                    html.P("Top 10 Universities in the World", style={"font-weight": "bold", "text-align": "center"}),
-                    html.Div([dcc.Graph(id="fig_bar_uni", figure=fig_bar_uni)]),
+                    html.P("Top 10 Universities in the World", style={"font-weight": "bold", "text-align": "left"}),
+                    html.Div([dcc.Graph(id="fig_bar_uni", figure=fig_bar_uni)], className="pretty_container"),
                     html.Div(style={'margin-top': 30}),
                     html.Div([
                         dcc.RadioItems(
-                                    id='uni_radio_category',
-                                    options=[x for x in category_options if (x!='Literature' and x!='Peace')],
-                                    value=default_category,
+                                    id='radio_science',
+                                    options=[x for x in science_options],
+                                    value=default_science,
                                     labelStyle={'display': 'inline',}# "text-align": "justify"}      
                                 ),
                         ],
                         style={"text-align": "center"},
                     ),
-                    ],className="pretty_container eleven columns"),
+                    html.Div(style={'margin-top': 30}),
+                    ],className="bare_container eleven columns"),
 
 
                 html.P("Home Countries of the Laureates Scooling in the USA", 
@@ -705,18 +709,18 @@ def update_colorpleth(radiovalue, radiovalue2, slidervalue):
 ############################## 4. Top Universities Callback #####################################
 @app.callback(
     Output('fig_bar_uni','figure'),
-    Input('uni_radio_category','value')
+    Input('radio_science','value')
 )
-def get_top_uni(chosen_category):
+def get_top_uni(chosen_science):
     # Filter by chosen category
-    if chosen_category==default_category:
+    if chosen_science==default_science:
         df_chosen = df.loc[(df['gender']!='org')]
     else:
-        df_chosen = df.loc[(df['gender']!='org') & (df['category']==chosen_category.lower())]
+        df_chosen = df.loc[(df['gender']!='org') & (df['category']==chosen_science.lower())]
 
-    df_chosen.dropna(subset=['name'], inplace=True)
+    df_chosen.loc[df_chosen['name'].isna(), :] = None #droping rows without university
 
-    df_chosen['uni_full'] = df_chosen['name'] + ', ' + df_chosen['country'] 
+    df_chosen.loc[:, 'uni_full'] = df_chosen['name'] + ',' + df_chosen['country'] 
     top = df_chosen['uni_full'].value_counts().head(10)
     data = {'values': top.index[::-1], 'counts': top.values[::-1]}
     df_top = pd.DataFrame(data)
@@ -725,9 +729,15 @@ def get_top_uni(chosen_category):
     df_top[['University', 'Country']] = df_top['values'].str.split(',', expand=True)
     df_top.drop('values', axis=1, inplace=True) # dropping the original column 
 
+    # Split long names of universities and add to new_labels list
+    new_labels = []
+    for label in df_top.loc[:,'University']:
+        new_label = split_long_label(label, 40) #allowing labels to be no wider than 40 letters
+        new_labels.append(new_label)
+
     data_bar_uni = dict(type='bar',
                         x=df_top['counts'],
-                        y=df_top['University'],
+                        y=new_labels, # edited df_top['University'],
                         text=df_top['Country'],
                         orientation='h',
                         marker=dict(color=['#E3B166', '#D6A359', '#C8964D', '#BA8941', '#AC7D36', 
@@ -736,12 +746,12 @@ def get_top_uni(chosen_category):
                         )
 
     layout_bar_uni = dict(#xaxis=dict(title='Number of Laureates'), 
-                        #yaxis=dict(title='University'),
                         plot_bgcolor='#fbe9d9')
 
     fig_bar_uni = go.Figure(data=[data_bar_uni], layout=layout_bar_uni)
 
     fig_bar_uni.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+    
     return fig_bar_uni
 
 """
