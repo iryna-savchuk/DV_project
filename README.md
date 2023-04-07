@@ -18,4 +18,4 @@ Nobelprize.org offers open data about the Nobel Laureates. The data provided the
 [Nobelprize API reference](https://nobelprize.readme.io/reference/getting-started)
 
 ### Project Objective
-Working in the group of 3 students, transform data into a meaningful interactive visualization. Use visualization concepts and techniques acquired throughout the academic course.
+The main objective of the current project is to transform raw data into a meaningful interactive visualization. While implementing the project, students are encouraged to use visualization concepts and techniques acquired throughout the academic course.
