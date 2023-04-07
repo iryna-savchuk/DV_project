@@ -206,33 +206,34 @@ fig_choropleth.update_geos(showcoastlines=False)
 #======= Barchart - Universities ======= 
 #=======================================
 df['uni_full'] = df['name'] +', ' +df['country'] 
-top_5 = df['uni_full'].value_counts().head(5)
-data = {'values': top_5.index[::-1], 'counts': top_5.values[::-1]}
-df_top_5 = pd.DataFrame(data)
+top = df['uni_full'].value_counts().head(10)
+data = {'values': top.index[::-1], 'counts': top.values[::-1]}
+df_top = pd.DataFrame(data)
 
-# Splitting column A into two columns based on comma separation
-df_top_5[['University', 'Country']] = df_top_5['values'].str.split(',', expand=True)
-
-# Dropping the original column A
-df_top_5.drop('values', axis=1, inplace=True)
+# Splitting column into two columns based on comma separation
+df_top[['University', 'Country']] = df_top['values'].str.split(',', expand=True)
+df_top.drop('values', axis=1, inplace=True) # dropping the original column 
 
 data_bar_uni = dict(type='bar',
-                    x=df_top_5['counts'],
-                    y=df_top_5['University'],
-                    text=df_top_5['University'],
+                    x=df_top['counts'],
+                    y=df_top['University'],
+                    text=df_top['Country'],
                     orientation='h',
-                    marker=dict(color=['#b66c05', '#a75b13', '#976a20', '#87682e', '#776837']),
-                    hovertemplate='%{y}<br>Laureates: %{x}<br>Country: %{customdata}<br><extra></extra>',
-                    customdata=df_top_5['Country'],
+                    #marker=dict(color=['#E3A771', '#C77C52', '#AB5733', '#8F3114', '#732E13']),
+                    marker=dict(color=['#E3B166', '#D6A359', '#C8964D', '#BA8941', '#AC7D36', 
+                                       '#9D7030', '#8F6529', '#805823', '#714B1C', '#623F17']),
+                    hovertemplate='%{y}, %{text}<br>'+'Laureates: %{x}<br><extra></extra>'
                     )
 
-layout_bar_uni = dict(title=dict(text='Top 5 Universities'), 
-                      xaxis=dict(title='Number of Nobel Laureates'), 
-                      yaxis=dict(title='', showticklabels=False), 
-                      plot_bgcolor='#fbe9d9')
+layout_bar_uni = dict(title=dict(text='Top 10 Universities'), 
+                           xaxis=dict(title='Number of Nobel Laureates'), 
+                           #yaxis=dict(title='University'),
+                           plot_bgcolor='#fbe9d9')
 
 fig_bar_uni = go.Figure(data=[data_bar_uni], layout=layout_bar_uni)
+
 fig_bar_uni.update_layout(margin={"r":10,"t":40,"l":10,"b":40})
+
 ##########################
 #### The APP Layout ######
 ##########################
@@ -426,7 +427,7 @@ app.layout =  html.Div([
         # Geographical Distribution of Nobel Prizes Winners
         html.Div(
             [
-                html.H6("Geographical Origin of Nobel Prizes Winners", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),     
+                html.H6("Home Countries of Nobel Prizes Winners", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),     
                 
                 html.Div([
                     # Div contining choropleth graph
@@ -463,15 +464,21 @@ app.layout =  html.Div([
             className="row pretty_container",
         ),
 
-        # Additional Info on Geo
+        # Schooling Section
         html.Div(
             [
-                html.H6("General Nobel Prize information", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
+                html.H6("Schooling Information", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
                 html.Div([dcc.Graph(id="fig_bar_uni", figure=fig_bar_uni)], 
-                        className="pretty_container sixish columns"),
-                html.Div([html.Img(id="fig_country_circle", src=app.get_asset_url('circlos_plot.png'),
-                                   style={'position':'relative', 'width':'100%'})],
-                        className="pretty_container five columns"),
+                        className="pretty_container eleven columns"),
+                html.Div([html.Img(id="fig_country_circle", src=app.get_asset_url('moved_to_US.png'),
+                                   style={'position':'relative', 'width':'100%', 'background-color':'#ffffff'})],
+                        className="four columns"),
+
+                html.Div([
+                    #html.Div(style={'margin-top': 70})
+                    html.P("Text, text, text.Text, text, text. Text, text, text.Text, text, text"),
+                    html.P("Last year, iText, text, text. Text, text, textText, text, textText, text, textText, text, text"),
+                    ], className ="seven columns"),
             ],
             className="row pretty_container",
         ),
