@@ -72,8 +72,14 @@ fig_sunburst.update_traces(hovertemplate="<b>%{label}:</b><br>%{value} Laureates
 fig_sunburst.update_traces(leaf_opacity=0.6)
 fig_sunburst.update_traces(textfont_size=14)
 fig_sunburst.update_traces(textinfo="label+percent parent")
-fig_sunburst.update_layout(margin={"r":5,"t":0,"l":5,"b":0})
+fig_sunburst.update_layout(margin={"r":5,"t":30,"l":5,"b":0})
 
+fig_sunburst.update_layout(title={'text': 'Laureates and Categories', 
+                                  'font': {'family':"Helvetica Neue", 'color':'black'},
+                                   'y':0.95,
+                                   'x':0.5,
+                                   'xanchor': 'center',
+                                   'yanchor': 'top'})
 #===============================================
 #======= Scatter plot - Category by Year ======= 
 #===============================================
@@ -94,13 +100,19 @@ data_scatter = dict(type='scatter', x=x, y=y,
                     hovertemplate="Category: %{y}<br>Year: %{x}<br><extra></extra>" ,
                     showlegend=False)
 
-layout_scatter = dict(title=dict(text='Awarded Categories by Year'), 
-                      yaxis=dict(title='Category', gridwidth=2),
+layout_scatter = dict(yaxis=dict(title='Category', gridwidth=2),
                       xaxis=dict(title='Year', gridwidth=2), #, tickvals= [i for i in range(1900, 2025, 10)]),
                       plot_bgcolor='#fbe9d9')
 
 fig_scatter = go.Figure(data=data_scatter, layout=layout_scatter)
 fig_scatter.update_layout(margin={"r":20,"t":70,"l":35,"b":35})
+
+fig_scatter.update_layout(title={'text': 'Awarded Categories by Year', 
+                                  'font': {'family':"Helvetica Neue", 'color':'black'},
+                                   'y':0.95,
+                                   'x':0.5,
+                                   'xanchor': 'center',
+                                   'yanchor': 'top'})
 
 #========================================
 #======= Barchart: Gender by Year ======= 
@@ -219,20 +231,18 @@ data_bar_uni = dict(type='bar',
                     y=df_top['University'],
                     text=df_top['Country'],
                     orientation='h',
-                    #marker=dict(color=['#E3A771', '#C77C52', '#AB5733', '#8F3114', '#732E13']),
                     marker=dict(color=['#E3B166', '#D6A359', '#C8964D', '#BA8941', '#AC7D36', 
                                        '#9D7030', '#8F6529', '#805823', '#714B1C', '#623F17']),
-                    hovertemplate='%{y}, %{text}<br>'+'Laureates: %{x}<br><extra></extra>'
+                    hovertemplate='%{y}, %{text}<br>'+'Laureates: %{x}<br><extra></extra>',
                     )
 
-layout_bar_uni = dict(title=dict(text='Top 10 Universities'), 
-                           xaxis=dict(title='Number of Nobel Laureates'), 
-                           #yaxis=dict(title='University'),
-                           plot_bgcolor='#fbe9d9')
+layout_bar_uni = dict(#xaxis=dict(title='Number of Laureates'), 
+                      #yaxis=dict(title='University'),
+                      plot_bgcolor='#fbe9d9')
 
 fig_bar_uni = go.Figure(data=[data_bar_uni], layout=layout_bar_uni)
 
-fig_bar_uni.update_layout(margin={"r":10,"t":40,"l":10,"b":40})
+fig_bar_uni.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 
 ##########################
 #### The APP Layout ######
@@ -328,7 +338,7 @@ app.layout =  html.Div([
                     html.Div([
                         html.P("Motivation for the Award", 
                                 style={"font-weight": "bold","text-align": "center"}),
-                        html.P("The below WordCloud outlines words that appear more frequently in the textual motivation for the Nobel Prize awards (can be filtered by research category):"),
+                        html.P("The cloud of words below outlines which words appear more frequently in the textual motivation for the Nobel Prize awards:"),
                         html.Div(style={'margin-top': 20}),
                         html.Div([html.Img(id="image_wordcloud", style={'position':'relative', 'width':'100%'})],
                                 className="eight columns bare_container"),
@@ -341,9 +351,9 @@ app.layout =  html.Div([
                                     labelStyle={'display':'block'},
                                     ),
                             ],className="three columns bare_container"
-                        ),
-                        ], 
-                    ),
+                        ), 
+                    ], className="mini_container twelve columns",),
+
                     ], className="container sixish columns"
                 ),
                 html.Div([dcc.Graph(id="fig_scatter", figure=fig_scatter)], className="pretty_container eleven columns"),
@@ -358,11 +368,11 @@ app.layout =  html.Div([
             html.Div([
                 html.H6("Genders of the Nobel Prize Laureates", 
                         style={"margin-top": "0","text-align": "center"}),
-                html.Div([
-                    html.Div([dcc.Graph(id="fig_bar_gender", figure=fig_bar_gender)]),
-                    ], className ="eight columns pretty_container"),
+                html.Div([dcc.Graph(id="fig_bar_gender", figure=fig_bar_gender)], 
+                                    className ="eight columns pretty_container"),
                 html.Div([
                     #html.Div(style={'margin-top': 70})
+                    html.P("Insights on gender figures:", style={"font-weight":"bold"}),
                     html.P("More than 90 percent of Nobel Prize winners have been men."),
                     html.P("Last year, in 2022, two out of the fourteen Nobel laureates were women."),
                     html.P("The graph illustrates annual number of the awarded individuals split by gender. As can be seen, the situation with gender disproportion becomes a bit better with the time."),
@@ -438,12 +448,27 @@ app.layout =  html.Div([
 
                     # Div containg selection options
                     html.Div(
-                        [html.P("Select Scale", className="control_label",style={"text-align":"left","font-weight":"bold"}),
-                        dcc.RadioItems(id='scale-type',
-                            options=[{'label': i, 'value': i} for i in ['Log Scale', 'Absolute Count']],
-                            value='Log Scale',
-                            labelStyle={'display': 'inline-block'},
-                            style={"float": "right"})
+                        [   
+                        html.Div([
+                            html.P("Select Scale", className="control_label",style={"text-align":"left","font-weight":"bold"}),
+                            dcc.RadioItems(id='scale-type',
+                                options=[{'label': i, 'value': i} for i in ['Log Scale', 'Absolute Count']],
+                                value='Log Scale',
+                                labelStyle={'display':'block'},
+                                #style={"float": "right"}),
+                            )
+                            ], className="mini_container",
+                        ),
+                        html.Div(style={'margin-top': 30}),
+                        html.Div([
+                            html.P("Select Category", className="control_label",style={"text-align":"left","font-weight":"bold"}),
+                            dcc.RadioItems(id='category-type',
+                                options=category_options,
+                                value=default_category,
+                                labelStyle={'display':'block'},
+                                ),
+                            ], className="mini_container",
+                        ), 
                         ], className="two columns", #style={'background-color':'#ffffff'}
                     )
                 ],className="row"),
@@ -456,7 +481,7 @@ app.layout =  html.Div([
                                         1980: '1980', 1990: '1990', 2000: '2000',  2010: '2010',
                                         2020: '2020',},
                                 tooltip={"always_visible": True}, 
-                                id='my-range-slider'
+                                id='year-range-slider'
                                 ),
 
                 html.Div(id='output-container-range-slider', style={'margin-top': 50}) # for debugging
@@ -468,17 +493,41 @@ app.layout =  html.Div([
         html.Div(
             [
                 html.H6("Schooling Information", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
-                html.Div([dcc.Graph(id="fig_bar_uni", figure=fig_bar_uni)], 
-                        className="pretty_container eleven columns"),
-                html.Div([html.Img(id="fig_country_circle", src=app.get_asset_url('moved_to_US.png'),
-                                   style={'position':'relative', 'width':'100%', 'background-color':'#ffffff'})],
-                        className="four columns"),
+                html.Div(
+                    [
+                    html.P("Top 10 Universities in the World", style={"font-weight": "bold", "text-align": "center"}),
+                    html.Div([dcc.Graph(id="fig_bar_uni", figure=fig_bar_uni)]),
+                    html.Div(style={'margin-top': 30}),
+                    html.Div([
+                        dcc.RadioItems(
+                                    id='uni_radio_category',
+                                    options=[x for x in category_options if (x!='Literature' and x!='Peace')],
+                                    value=default_category,
+                                    labelStyle={'display': 'inline',}# "text-align": "justify"}      
+                                ),
+                        ],
+                        style={"text-align": "center"},
+                    ),
+                    ],className="pretty_container eleven columns"),
+
+
+                html.P("Home Countries of the Laureates Scooling in the USA", 
+                        style={"font-weight": "bold", "text-align": "left"},
+                        className="bare_container columns"), 
+                #html.Div(style={'margin-top': 50}),
+                html.Div([html.Img(id="fig_country_circle", 
+                                  src=app.get_asset_url('moved_to_US.png'),
+                                  style={'position':'relative','width':'100%','background-color':'#ffffff'}
+                                  )],
+                        className="pretty_container four columns"),
 
                 html.Div([
                     #html.Div(style={'margin-top': 70})
-                    html.P("Text, text, text.Text, text, text. Text, text, text.Text, text, text"),
-                    html.P("Last year, iText, text, text. Text, text, textText, text, textText, text, textText, text, text"),
-                    ], className ="seven columns"),
+                    html.P("From the geographical map above, it can be noticed that people who were born in the USA are awarded Nobel Prize more often than people who were born in other countries.\
+                           It might be related to the fact that the top most prominent researches are also done in the USA-based universities "),
+                    html.P(),
+                    html.P("At the same time, there is a big proportion of the Nomel Prize awardees whose home country is not the US, but they have done schooling in America."),
+                    ], className ="sixish columns"),
             ],
             className="row pretty_container",
         ),
@@ -600,13 +649,22 @@ def get_ages(chosen_category):
 @app.callback(
     Output('choropleth-graph', 'figure'),
     Input('scale-type', 'value'),
-    [Input('my-range-slider', 'value')])
+    Input('category-type', 'value'),
+    [Input('year-range-slider', 'value')])
 
-def update_colorpleth(radiovalue, slidervalue):
+def update_colorpleth(radiovalue, radiovalue2, slidervalue):
 
-    # Filtering years and generating new df_density
+    # Filtering years
     mask = (df['year'] >= slidervalue[0]) & (df['year'] <= slidervalue[1])  # including the chosen years
     df_chosen = df.loc[mask]
+
+    # Filter by chosen category
+    if radiovalue2==default_category:
+        df_chosen = df_chosen.loc[(df['gender']!='org')]
+    else:
+        df_chosen = df_chosen.loc[(df['gender']!='org') & (df['category']==radiovalue2.lower())]
+
+    # Generating dataframe for map
     df_density = make_density_df(df_chosen)
     
     # Updating values that depend on Scale chosen by user
@@ -643,6 +701,48 @@ def update_colorpleth(radiovalue, slidervalue):
     fig_choropleth.update_geos(showcoastlines=False)
     return fig_choropleth 
 
+
+############################## 4. Top Universities Callback #####################################
+@app.callback(
+    Output('fig_bar_uni','figure'),
+    Input('uni_radio_category','value')
+)
+def get_top_uni(chosen_category):
+    # Filter by chosen category
+    if chosen_category==default_category:
+        df_chosen = df.loc[(df['gender']!='org')]
+    else:
+        df_chosen = df.loc[(df['gender']!='org') & (df['category']==chosen_category.lower())]
+
+    df_chosen.dropna(subset=['name'], inplace=True)
+
+    df_chosen['uni_full'] = df_chosen['name'] + ', ' + df_chosen['country'] 
+    top = df_chosen['uni_full'].value_counts().head(10)
+    data = {'values': top.index[::-1], 'counts': top.values[::-1]}
+    df_top = pd.DataFrame(data)
+
+    # Splitting column into two columns based on comma separation
+    df_top[['University', 'Country']] = df_top['values'].str.split(',', expand=True)
+    df_top.drop('values', axis=1, inplace=True) # dropping the original column 
+
+    data_bar_uni = dict(type='bar',
+                        x=df_top['counts'],
+                        y=df_top['University'],
+                        text=df_top['Country'],
+                        orientation='h',
+                        marker=dict(color=['#E3B166', '#D6A359', '#C8964D', '#BA8941', '#AC7D36', 
+                                        '#9D7030', '#8F6529', '#805823', '#714B1C', '#623F17']),
+                        hovertemplate='%{y}, %{text}<br>'+'Laureates: %{x}<br><extra></extra>',
+                        )
+
+    layout_bar_uni = dict(#xaxis=dict(title='Number of Laureates'), 
+                        #yaxis=dict(title='University'),
+                        plot_bgcolor='#fbe9d9')
+
+    fig_bar_uni = go.Figure(data=[data_bar_uni], layout=layout_bar_uni)
+
+    fig_bar_uni.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+    return fig_bar_uni
 
 """
 @app.callback(
