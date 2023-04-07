@@ -515,12 +515,19 @@ app.layout =  html.Div([
                     ],className="bare_container eleven columns"),
 
 
-                html.P("Home Countries of the Laureates Scooling in the USA", 
-                        style={"font-weight": "bold", "text-align": "left"},
-                        className="bare_container columns"), 
-                #html.Div(style={'margin-top': 50}),
-                html.Div([html.Img(id="fig_country_circle", 
-                                  src=app.get_asset_url('moved_to_US.png'),
+                html.P("Movement of the Laureates Scooling in the USA", 
+                        style={"font-weight": "bold", "text-align": "left"}, className="bare_container columns"), 
+                html.Div([html.Img(id="circle_US", 
+                                  src=app.get_asset_url('All Sciences_US.png'),
+                                  style={'position':'relative','width':'100%','background-color':'#ffffff'}
+                                  )],
+                        className="pretty_container four columns"),
+
+                
+                html.P("Movement of the Laureates Scooling in the GB", 
+                        style={"font-weight": "bold", "text-align": "left"}, className="bare_container columns"), 
+                html.Div([html.Img(id="circle_GB", 
+                                  src=app.get_asset_url('All Sciences_GB.png'),
                                   style={'position':'relative','width':'100%','background-color':'#ffffff'}
                                   )],
                         className="pretty_container four columns"),
