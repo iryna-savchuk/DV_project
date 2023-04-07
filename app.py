@@ -12,7 +12,7 @@ from io import BytesIO
 import base64
 
 # Importing Custom functions
-from functions import make_density_df, get_data_geo, plot_wordcloud, plot_country_circle
+from functions import make_density_df, get_data_geo, plot_wordcloud
 
 # Dataset read
 path = 'data/'
@@ -233,7 +233,6 @@ layout_bar_uni = dict(title=dict(text='Top 5 Universities'),
 
 fig_bar_uni = go.Figure(data=[data_bar_uni], layout=layout_bar_uni)
 fig_bar_uni.update_layout(margin={"r":10,"t":40,"l":10,"b":40})
-
 ##########################
 #### The APP Layout ######
 ##########################
@@ -373,7 +372,6 @@ app.layout =  html.Div([
             ),
 
             
-
             # Age Info Div
             html.Div([
                 html.H6("Ages of the Nobel Prize Laureates", style={"margin-top":"50","text-align": "center"}),
@@ -464,20 +462,19 @@ app.layout =  html.Div([
             ],
             className="row pretty_container",
         ),
-    '''
+
         # Additional Info on Geo
         html.Div(
             [
                 html.H6("General Nobel Prize information", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
-                html.Div([dcc.Graph(id="fig_bar_uni", figure=fig_bar_uni)], className="pretty_container sixish columns"),
-                #html.Div([dcc.Img(id="fig_country_circle", figure=plot_country_circle(df))], className="pretty_container fivish columns"),
-                html.Div([dcc.Graph(id="fig_country_circle")],
-                                className="eight columns bare_container"),
+                html.Div([dcc.Graph(id="fig_bar_uni", figure=fig_bar_uni)], 
+                        className="pretty_container sixish columns"),
+                html.Div([html.Img(id="fig_country_circle", src=app.get_asset_url('circlos_plot.png'),
+                                   style={'position':'relative', 'width':'100%'})],
+                        className="pretty_container five columns"),
             ],
             className="row pretty_container",
         ),
-    '''
-
 
     ]), # Main Body Div --end
 
@@ -517,7 +514,23 @@ app.layout =  html.Div([
 #### Callbacks ######
 #####################
 
-################################### 1. Histogram: Age when prize awarded #################
+################################### 1. WorldCLoud callback #####################################
+@app.callback(
+    Output('image_wordcloud','src'),
+    Input('radio_category_general','value')
+)
+def make_image(chosen_category):
+    # Filter by chosen category
+    if chosen_category==default_category:
+        chosen_df = df.copy()
+    else:
+        chosen_df = df.loc[df['category']==chosen_category.lower()]  
+    text = str(chosen_df['motivation'].values)
+    img = BytesIO()
+    plot_wordcloud(text).save(img, format='PNG')
+    return 'data:image/png;base64,{}'.format(base64.b64encode(img.getvalue()).decode())
+
+################################### 2. Histogram: Age when prize awarded #################
 @app.callback(
     [
         Output('max_age','children'),
@@ -575,7 +588,8 @@ def get_ages(chosen_category):
            str(min_age)+" years old", str(min_name), "Year: " + str(min_year) +" ("+min_category+")",\
            fig_hist_age
 
-################################ 2. Choropleth Map callback #####################################
+
+################################ 3. Choropleth Map callback #####################################
 @app.callback(
     Output('choropleth-graph', 'figure'),
     Input('scale-type', 'value'),
@@ -623,34 +637,7 @@ def update_colorpleth(radiovalue, slidervalue):
     return fig_choropleth 
 
 
-################################### 2. WorldCLoud callback #####################################
-@app.callback(
-    Output('image_wordcloud','src'),
-    Input('radio_category_general','value')
-)
-def make_image(chosen_category):
-    # Filter by chosen category
-    if chosen_category==default_category:
-        chosen_df = df.copy()
-    else:
-        chosen_df = df.loc[df['category']==chosen_category.lower()]  
-    text = str(chosen_df['motivation'].values)
-    img = BytesIO()
-    plot_wordcloud(text).save(img, format='PNG')
-    return 'data:image/png;base64,{}'.format(base64.b64encode(img.getvalue()).decode())
-
 """
-
-@app.callback(
-    Output('fig_country_circle','figure'),
-    [Input('fig_country_circle', 'id')])
-def make_country_circle(b):
-    # Filter by chosen category
-    fig = plot_country_circle(df)
-    plotly_fig = mpl_to_plotly(fig)
-    return plotly_fig
-
-
 @app.callback(
     Output('image_wordcloud', 'src'), 
     [Input('image_wordcloud', 'id')])
