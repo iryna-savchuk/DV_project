@@ -359,7 +359,7 @@ app.layout =  html.Div([
 
                     ], className="container sixish columns"
                 ),
-                html.Div([dcc.Graph(id="fig_scatter", figure=fig_scatter)], className="pretty_container eleven columns"),
+                html.Div([dcc.Graph(id="fig_scatter", figure=fig_scatter)], className="pretty_container twelve columns"),
             ],
             className="row pretty_container",
         ),
@@ -376,10 +376,10 @@ app.layout =  html.Div([
                 html.Div([
                     #html.Div(style={'margin-top': 70})
                     html.P("Insights on gender figures:", style={"font-weight":"bold"}),
-                    html.P("More than 90 percent of Nobel Prize winners have been men."),
-                    html.P("Last year, in 2022, two out of the fourteen Nobel laureates were women."),
-                    html.P("The graph illustrates annual number of the awarded individuals split by gender. As can be seen, the situation with gender disproportion becomes a bit better with the time."),
-                    html.P("One more thing is noticeable on the graph - the gap in the 1940-th. It turned out, during the Second World War, no Nobel Peace Prize was awarded. Under the German occupation of Norway from 1940 to 1945 normal political activity was banned, and there was little the Nobel Committee of the Norwegian Storting could do except postpone the prize awards and defend its integrity.")
+                    html.P("- More than 90 percent of Nobel Prize winners have been men."),
+                    html.P("- Last year, in 2022, two out of the fourteen Nobel laureates were women."),
+                    html.P("- The graph illustrates annual number of the awarded individuals split by gender. As can be seen, the situation with gender disproportion becomes a bit better with the time."),
+                    html.P("- One more thing is noticeable on the graph - the gap in the 1940-th. It turned out, during the Second World War, no Nobel Peace Prize was awarded.")
                     ], className ="three columns"),
                 ],
                 className ="twelve columns pretty_container"
@@ -515,29 +515,23 @@ app.layout =  html.Div([
                     ],className="bare_container eleven columns"),
 
 
-                html.P("Movement of the Laureates Scooling in the USA", 
+                html.P("The Flow of Laureates to the USA Schools", 
                         style={"font-weight": "bold", "text-align": "left"}, className="bare_container columns"), 
                 html.Div([html.Img(id="circle_US", 
-                                  src=app.get_asset_url('All Sciences_US.png'),
-                                  style={'position':'relative','width':'100%','background-color':'#ffffff'}
-                                  )],
-                        className="pretty_container four columns"),
-
-                
-                html.P("Movement of the Laureates Scooling in the GB", 
-                        style={"font-weight": "bold", "text-align": "left"}, className="bare_container columns"), 
-                html.Div([html.Img(id="circle_GB", 
-                                  src=app.get_asset_url('All Sciences_GB.png'),
                                   style={'position':'relative','width':'100%','background-color':'#ffffff'}
                                   )],
                         className="pretty_container four columns"),
 
                 html.Div([
                     #html.Div(style={'margin-top': 70})
-                    html.P("From the geographical map above, it can be noticed that people who were born in the USA are awarded Nobel Prize more often than people who were born in other countries.\
-                           It might be related to the fact that the top most prominent researches are also done in the USA-based universities "),
+                    html.P("Insights on geographical distribution:", style={"font-weight":"bold"}),
                     html.P(),
-                    html.P("At the same time, there is a big proportion of the Nomel Prize awardees whose home country is not the US, but they have done schooling in America."),
+                    html.P("- Individuals who were born in the USA become the Nobel Prize Laureates more often than those who were born in other countries."),
+                    html.P(),
+                    html.P("- The top performing universities in terms of the Nobel Prize are also based in the USA. It is true throughout all the scientific categories of the Award: Physics, Chemistry, Medicine, and Economics."),
+                    html.P(),
+                    html.P("- The circular graph to the right outlines the proportion of individual Laureates who were born in other countries and received their Nobel Prize Award while schooling in the United States.\
+                            As can be seen, there is a fair fraction of reserchers whose home country is not the US, but they have done their discoveries in American institutions."),
                     ], className ="sixish columns"),
             ],
             className="row pretty_container",
@@ -554,10 +548,12 @@ app.layout =  html.Div([
                     html.H6("References", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
                     dcc.Markdown(
                         """\
-                            - Inspiration #1 - "Nobel Prizes: Is there a secret formula to winning one?": https://www.bbc.com/future/article/20121008-winning-formula-for-nobel-prizes
-                            - Inspiration #2 - Infographic: Nobel Prize winners 1901-2021: https://www.aljazeera.com/news/2021/10/7/infographic-nobel-prize-winners-1901-2021
-                            - Official website: https://www.nobelprize.org/prizes/
-                            - Nobelprize.org API reference that was used to get the data: https://nobelprize.readme.io/reference/getting-started
+                            - Inspiration #1 - Infographic: Nobel Prize winners 1901-2021: https://www.aljazeera.com/news/2021/10/7/infographic-nobel-prize-winners-1901-2021
+                            - Inspiration #2 - "Nobel Prizes: Is there a secret formula to winning one?": https://www.bbc.com/future/article/20121008-winning-formula-for-nobel-prizes
+                            - The Nobel Prize official website: https://www.nobelprize.org/prizes/
+                            - Nobelprize.org API reference used to get the data: https://nobelprize.readme.io/reference/getting-started
+                            - Plotly open source graphing library for Python: https://plotly.com/python/
+                            - Circular chord diagrams have been created with pyCirclize tool: https://moshi4.github.io/pyCirclize/chord_diagram/
                             """
                     ,style={"font-size":"10pt"}),                  
                 ],
@@ -713,9 +709,10 @@ def update_colorpleth(radiovalue, radiovalue2, slidervalue):
     return fig_choropleth 
 
 
-############################## 4. Top Universities Callback #####################################
+############################## 4. Universities Callback #####################################
 @app.callback(
     Output('fig_bar_uni','figure'),
+    Output('circle_US', 'src'),
     Input('radio_science','value')
 )
 def get_top_uni(chosen_science):
@@ -756,10 +753,11 @@ def get_top_uni(chosen_science):
                         plot_bgcolor='#fbe9d9')
 
     fig_bar_uni = go.Figure(data=[data_bar_uni], layout=layout_bar_uni)
-
     fig_bar_uni.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+
+    file_name_US = chosen_science+'_US.png'
     
-    return fig_bar_uni
+    return fig_bar_uni, app.get_asset_url(file_name_US)
 
 """
 @app.callback(
