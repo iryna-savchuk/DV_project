@@ -304,7 +304,6 @@ app.layout =  html.Div([
                     className="one-third column bare_container",
                 ),
             ],
-            
             id="header",
             className="row flex-display",
             style={"margin-bottom": "20px"},
@@ -756,5 +755,5 @@ def get_top_uni(chosen_science):
 #### SERVER RUN ######
 ######################
 if __name__ == '__main__':
-    app.run_server(debug=False) 
+    app.run_server(debug=True) 
     
