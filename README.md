@@ -6,7 +6,6 @@
 **Students:** 
 - Iryna Savchuk (20211310)
 - Cátia Sofia Pereira Parrinha (20201320)
-- Gueu (???)
 
 ## Project Deatils
 ### Task Description 
