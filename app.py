@@ -18,7 +18,7 @@ from functions import make_density_df, get_data_geo, plot_wordcloud, split_long_
 path = 'data/'
 df = pd.read_csv(path + 'merged.csv')
 
-# Pre-defining the options for filtering menu in Map
+# Pre-defining the options for selection menus
 category_options = ['All Categories', 'Physics', 'Chemistry', 'Medicine', 'Literature', 'Peace', 'Economics']
 default_category = "All Categories"
 science_options = ['All Sciences', 'Physics', 'Chemistry', 'Medicine', 'Economics']
@@ -61,8 +61,7 @@ sunburst_df['laureate'] = sunburst_df['gender'].apply(lambda x: 'Organisation' i
 sunburst_df['category'] = sunburst_df['category'].apply(lambda x: x.capitalize())
 
 fig_sunburst = px.sunburst(sunburst_df, 
-                           path=['total', 'laureate', 'category'],  
-                           #path=['laureate', 'category'], 
+                           path=['total', 'laureate', 'category'],  #path=['laureate', 'category'], 
                            values='size',
                            color = 'laureate',
                            color_discrete_map={'(?)':'', 'Individual':'#eb993c', 'Organisation':'#877769'},
@@ -82,6 +81,7 @@ fig_sunburst.update_layout(title={'text': 'Laureates and Categories',
                                    'x':0.5,
                                    'xanchor': 'center',
                                    'yanchor': 'top'})
+
 #===============================================
 #======= Scatter plot - Category by Year ======= 
 #===============================================
@@ -103,7 +103,7 @@ data_scatter = dict(type='scatter', x=x, y=y,
                     showlegend=False)
 
 layout_scatter = dict(yaxis=dict(title='Category', gridwidth=2),
-                      xaxis=dict(title='Year', gridwidth=2), #, tickvals= [i for i in range(1900, 2025, 10)]),
+                      xaxis=dict(title='Year', gridwidth=2), 
                       plot_bgcolor='#fbe9d9')
 
 fig_scatter = go.Figure(data=data_scatter, layout=layout_scatter)
@@ -131,8 +131,6 @@ year = df_gender_year['year']
 female = df_gender_year['female']
 male = df_gender_year['male']*(-1)
 
-# Creating instance of the figure
-#fig_bar_gender = go.Figure()
 fig_bar_gender = make_subplots(rows=1, cols=2, specs=[[{}, {}]], 
                                shared_yaxes=True, horizontal_spacing=0,
                                subplot_titles = ('Males', 'Females'))
@@ -159,15 +157,11 @@ fig_bar_gender.update_layout(#title='Annual Number of Awarded Individuals, split
                  bargap = 0.2, bargroupgap = 0,
                  xaxis = dict(tickmode = 'array',
                               tickvals = [-14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1],
-                                          #0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
                               ticktext = [14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
-                                          #0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
                             ),
                 xaxis2 = dict(range=[0, 14],
-                              tickvals = [#-14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1,
-                                          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
-                              ticktext = [#14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,
-                                          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+                              tickvals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+                              ticktext = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
                             ),
 
                 yaxis=dict(#side='right',
@@ -181,7 +175,7 @@ fig_bar_gender.update_layout(#title='Annual Number of Awarded Individuals, split
 
 fig_bar_gender.update_layout(margin={"r":20,"t":35,"l":20,"b":15})
 
-# Make a horizontal highlight section
+# Create a horizontal highlight section
 fig_bar_gender.add_hrect(y0=1939, y1=1945, row=1, col=1,
                 fillcolor="Grey", opacity=0.25)
 
@@ -216,10 +210,10 @@ fig_choropleth = go.Figure(data=data_choropleth, layout=layout_choropleth)
 fig_choropleth.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 fig_choropleth.update_geos(showcoastlines=False)
 
-
 #=======================================
 #======= Barchart - Universities ======= 
 #=======================================
+
 df['uni_full'] = df['name'] +', ' +df['country'] 
 top = df['uni_full'].value_counts().head(10)
 data = {'values': top.index[::-1], 'counts': top.values[::-1]}
@@ -247,12 +241,13 @@ fig_bar_uni = go.Figure(data=[data_bar_uni], layout=layout_bar_uni)
 
 fig_bar_uni.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 
+
 ##########################
 #### The APP Layout ######
 ##########################
+
 app = dash.Dash(__name__)
 server = app.server
-
 
 app.layout =  html.Div([
     # Header DIV
@@ -374,7 +369,7 @@ app.layout =  html.Div([
                 html.Div([dcc.Graph(id="fig_bar_gender", figure=fig_bar_gender)], 
                                     className ="eight columns pretty_container"),
                 html.Div([
-                    #html.Div(style={'margin-top': 70})
+                    html.Div(style={'margin-top': 20}),
                     html.P("Insights on gender figures:", style={"font-weight":"bold"}),
                     html.P("- More than 90 percent of Nobel Prize winners have been men."),
                     html.P("- Last year, in 2022, two out of the fourteen Nobel laureates were women."),
@@ -384,8 +379,7 @@ app.layout =  html.Div([
                 ],
                 className ="twelve columns pretty_container"
             ),
-
-            
+  
             # Age Info Div
             html.Div([
                 html.H6("Ages of the Nobel Prize Laureates", style={"margin-top":"50","text-align": "center"}),
@@ -396,8 +390,9 @@ app.layout =  html.Div([
                 ]),
                 
                 html.Div([
+                    html.Div(style={'margin-top': 20}),
                     html.Div(
-                        [
+                        [   
                             html.P("Maximum Age",style={"text-align": "center","font-weight":"bold"}),
                             html.P(id="max_age",style={"text-align": "center"}),
                             html.P(id="max_name",style={"text-align": "center"}),
@@ -429,7 +424,7 @@ app.layout =  html.Div([
                                 id='radio_category',
                                 options= category_options,
                                 value=default_category,
-                                labelStyle={'display': 'inline',}# "text-align": "justify"}      
+                                labelStyle={'display': 'inline',}     
                             ),
                     ],
                     className="eight columns",
@@ -443,7 +438,7 @@ app.layout =  html.Div([
                 html.H6("Home Countries of Nobel Prizes Winners", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),     
                 
                 html.Div([
-                    # Div contining choropleth graph
+                    # Div containing choropleth graph
                     html.Div(
                         [dcc.Graph(id='choropleth-graph', figure=fig_choropleth)],
                         className="pretty_container nine columns",
@@ -458,7 +453,6 @@ app.layout =  html.Div([
                                 options=[{'label': i, 'value': i} for i in ['Log Scale', 'Absolute Count']],
                                 value='Log Scale',
                                 labelStyle={'display':'block'},
-                                #style={"float": "right"}),
                             )
                             ], className="mini_container",
                         ),
@@ -472,7 +466,7 @@ app.layout =  html.Div([
                                 ),
                             ], className="mini_container",
                         ), 
-                        ], className="two columns", #style={'background-color':'#ffffff'}
+                        ], className="two columns", 
                     )
                 ],className="row"),
 
@@ -486,8 +480,6 @@ app.layout =  html.Div([
                                 tooltip={"always_visible": True}, 
                                 id='year-range-slider'
                                 ),
-
-                html.Div(id='output-container-range-slider', style={'margin-top': 50}) # for debugging
             ],
             className="row pretty_container",
         ),
@@ -506,7 +498,7 @@ app.layout =  html.Div([
                                     id='radio_science',
                                     options=[x for x in science_options],
                                     value=default_science,
-                                    labelStyle={'display': 'inline',}# "text-align": "justify"}      
+                                    labelStyle={'display': 'inline',}    
                                 ),
                         ],
                         style={"text-align": "center"},
@@ -523,7 +515,7 @@ app.layout =  html.Div([
                         className="pretty_container four columns"),
 
                 html.Div([
-                    #html.Div(style={'margin-top': 70})
+                    html.Div(style={'margin-top': 20}),
                     html.P("Insights on geographical distribution:", style={"font-weight":"bold"}),
                     html.P(),
                     html.P("- Individuals who were born in the USA become the Nobel Prize Laureates more often than those who were born in other countries."),
@@ -593,7 +585,7 @@ def make_image(chosen_category):
     plot_wordcloud(text).save(img, format='PNG')
     return 'data:image/png;base64,{}'.format(base64.b64encode(img.getvalue()).decode())
 
-################################### 2. Histogram: Age when prize awarded #################
+###################### 2. Histogram Calback: Age when prize awarded #######################
 @app.callback(
     [
         Output('max_age','children'),
@@ -652,7 +644,7 @@ def get_ages(chosen_category):
            fig_hist_age
 
 
-################################ 3. Choropleth Map callback #####################################
+################################ 3. Choropleth Map Callback #####################################
 @app.callback(
     Output('choropleth-graph', 'figure'),
     Input('scale-type', 'value'),
@@ -709,7 +701,7 @@ def update_colorpleth(radiovalue, radiovalue2, slidervalue):
     return fig_choropleth 
 
 
-############################## 4. Universities Callback #####################################
+############################## 4. Universities Section Callback #####################################
 @app.callback(
     Output('fig_bar_uni','figure'),
     Output('circle_US', 'src'),
@@ -758,26 +750,6 @@ def get_top_uni(chosen_science):
     file_name_US = chosen_science+'_US.png'
     
     return fig_bar_uni, app.get_asset_url(file_name_US)
-
-"""
-@app.callback(
-    Output('image_wordcloud', 'src'), 
-    [Input('image_wordcloud', 'id')])
-def make_image(b):
-    text = str(df['motivation'].values)
-    img = BytesIO()
-    plot_wordcloud(text).save(img, format='PNG')
-    return 'data:image/png;base64,{}'.format(base64.b64encode(img.getvalue()).decode())
-"""
-
-# Helpful for debugging (delete when the app is ready)
-""" 
-@app.callback(
-    Output('output-container', 'children'),
-    [Input('my-range-slider', 'value')])
-def update_output(value):
-    return 'You have selected "{}"'.format(value)
-"""
 
 
 ######################
