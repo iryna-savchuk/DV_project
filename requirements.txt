@@ -28,3 +28,4 @@ tenacity==8.2.2
 tzdata==2023.3
 Werkzeug==2.2.3
 wordcloud==1.8.2.2
+gunicorn 
