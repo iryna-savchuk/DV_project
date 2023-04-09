@@ -425,7 +425,6 @@ app.layout =  html.Div([
                                 value=default_category,
                                 labelStyle={'display': 'inline',}     
                             ),
-                    html.P(),
                     ],
                     className="eight columns",
                     style={"text-align": "center"},
@@ -488,7 +487,7 @@ app.layout =  html.Div([
         # Schooling Section
         html.Div(
             [
-                html.H6("School Information of the Laureates", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
+                html.H6("Laureates' School Information", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
                 html.Div(
                     [
                     html.P("Top 10 Universities in the World", 
@@ -550,6 +549,7 @@ app.layout =  html.Div([
                             - The Nobel Prize official website: https://www.nobelprize.org/prizes/
                             - Nobelprize.org API reference used to get the data: https://nobelprize.readme.io/reference/getting-started
                             - Plotly open source graphing library for Python: https://plotly.com/python/
+                            - Dashboard styling inspiration: https://dash.gallery/dash-food-consumption/
                             - Circular chord diagrams have been created with pyCirclize tool: https://moshi4.github.io/pyCirclize/chord_diagram/
                             """
                     ,style={"font-size":"10pt"}),                  
