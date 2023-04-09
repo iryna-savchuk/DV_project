@@ -7,7 +7,11 @@
 - Iryna Savchuk (20211310)
 - Cátia Sofia Pereira Parrinha (20201320)
 
-## Project Deatils
+**Deployments:**
+- Railway.app: [https://nobel-prize.up.railway.app](https://nobel-prize.up.railway.app)
+- Render.com: [https://nobel-prize.onrender.com](https://nobel-prize.onrender.com) (*can be slow)
+
+## Project Details
 ### Task Description 
 Using historical data on the Nobel Prize winners, build a meaningful and interactive visualization with Plotly and Dash software.
 
