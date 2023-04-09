@@ -248,6 +248,7 @@ fig_bar_uni.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 
 app = dash.Dash(__name__)
 server = app.server
+app.title = "Nobel Prize Winners"
 
 app.layout =  html.Div([
     # Header DIV
@@ -267,7 +268,7 @@ app.layout =  html.Div([
                             },
                         )
                     ],
-                    className="one-third column bare_container",
+                    className="two columns bare_container", style={"float": "left"}
                 ),
 
                 html.Div(
@@ -275,7 +276,7 @@ app.layout =  html.Div([
                         html.Div(
                             [
                                 html.H4(
-                                    "Nobel Prize winners (1901-2022)",
+                                    "Nobel Prize Winners (1901-2022)",
                                     style={"font-weight": "bold"},
                                 ),
                                 html.H5(
@@ -284,7 +285,7 @@ app.layout =  html.Div([
                             ]
                         )
                     ],
-                    className="three column",
+                    className="sixish columns bare_container",
                     id="title",
                 ),
 
@@ -297,15 +298,16 @@ app.layout =  html.Div([
                                 "height": "70px",
                                 "width": "auto",
                                 "margin-bottom": "20px",
-                                "float": "right"
+                                "float": "right",
+                                #"margin-right":"-17.333333%"
                             },
                         )
                     ],
-                    className="one-third column bare_container",
+                    className="two columns bare_container", style={ "float": "right"}
                 ),
             ],
             id="header",
-            className="row flex-display",
+            className="row",
             style={"margin-bottom": "20px"},
         ), # Header Div --end
 
@@ -353,7 +355,8 @@ app.layout =  html.Div([
 
                     ], className="container sixish columns"
                 ),
-                html.Div([dcc.Graph(id="fig_scatter", figure=fig_scatter)], className="pretty_container twelve columns"),
+                html.Div([dcc.Graph(id="fig_scatter", figure=fig_scatter)], 
+                className="bare_container eleven columns"),
             ],
             className="row pretty_container",
         ),
@@ -369,7 +372,7 @@ app.layout =  html.Div([
                                     className ="eight columns pretty_container"),
                 html.Div([
                     html.Div(style={'margin-top': 20}),
-                    html.P("Insights on gender figures:", style={"font-weight":"bold"}),
+                    html.P("Insights on Gender Figures:", style={"font-weight":"bold"}),
                     html.P("- More than 90 percent of Nobel Prize winners have been men."),
                     html.P("- Last year, in 2022, two out of the fourteen Nobel laureates were women."),
                     html.P("- The graph illustrates annual number of the awarded individuals split by gender. As can be seen, the situation with gender disproportion becomes a bit better with the time."),
@@ -382,12 +385,10 @@ app.layout =  html.Div([
             # Age Info Div
             html.Div([
                 html.H6("Ages of the Nobel Prize Laureates", style={"margin-top":"50","text-align": "center"}),
-               # html.Div(style={'margin-top': 50}),
                 html.Div([
                     dcc.Graph(id="fig_hist_age")], className="eight columns pretty_container"       
                     ),
                 ]),
-                
                 html.Div([
                     html.Div(style={'margin-top': 20}),
                     html.Div(
@@ -415,7 +416,6 @@ app.layout =  html.Div([
                     ),
                     ], className="three columns",
                 ),
-
                 html.Div([
                     html.P(),
                     #html.P("Select Research Category:", className="control_label",style={"text-align": "center","font-weight":"bold"}),
@@ -425,25 +425,39 @@ app.layout =  html.Div([
                                 value=default_category,
                                 labelStyle={'display': 'inline',}     
                             ),
+                    html.P(),
                     ],
                     className="eight columns",
                     style={"text-align": "center"},
                 ),
+                #html.Div(style={'margin-top': 50}),
             ], className="row pretty_container"),
 
         # Geographical Distribution of Nobel Prizes Winners
         html.Div(
             [
                 html.H6("Home Countries of Nobel Prizes Winners", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),     
-                
                 html.Div([
                     # Div containing choropleth graph
-                    html.Div(
-                        [dcc.Graph(id='choropleth-graph', figure=fig_choropleth)],
-                        className="pretty_container nine columns",
+                    html.Div([
+                        html.Div(
+                            [dcc.Graph(id='choropleth-graph', figure=fig_choropleth)],
+                            className="pretty_container",
+                        ),
+                        html.Div(style={'margin-top': 50}), 
+                        dcc.RangeSlider(min=1901, max=2022, value=[1901, 2022], 
+                                    marks={ 1901: '1901', 1910: '1910', 1920: '1920',  1930: '1930',
+                                            1940: '1940', 1950: '1950', 1960: '1960',  1970: '1970',
+                                            1980: '1980', 1990: '1990', 2000: '2000',  2010: '2010',
+                                            2020: '2020',},
+                                    tooltip={"always_visible": True}, 
+                                    id='year-range-slider',
+                                    #className ="eleven columns" 
+                                    ),
+                    ], className="nine columns",
                     ),
 
-                    # Div containg selection options
+                    # Div containg selection options for Scale and Award Category
                     html.Div(
                         [   
                         html.Div([
@@ -452,10 +466,9 @@ app.layout =  html.Div([
                                 options=[{'label': i, 'value': i} for i in ['Log Scale', 'Absolute Count']],
                                 value='Log Scale',
                                 labelStyle={'display':'block'},
-                            )
-                            ], className="mini_container",
+                            ), 
+                            ], className="mini_container two columns",
                         ),
-                        html.Div(style={'margin-top': 30}),
                         html.Div([
                             html.P("Select Category", className="control_label",style={"text-align":"left","font-weight":"bold"}),
                             dcc.RadioItems(id='category-type',
@@ -463,22 +476,11 @@ app.layout =  html.Div([
                                 value=default_category,
                                 labelStyle={'display':'block'},
                                 ),
-                            ], className="mini_container",
+                            ], className="mini_container two columns",
                         ), 
-                        ], className="two columns", 
+                        ], #className="two columns bare_container", 
                     )
                 ],className="row"),
-
-                html.Div(style={'margin-top': 50}), 
-
-                dcc.RangeSlider(min=1901, max=2022, value=[1901, 2022], 
-                                marks={ 1901: '1901', 1910: '1910', 1920: '1920',  1930: '1930',
-                                        1940: '1940', 1950: '1950', 1960: '1960',  1970: '1970',
-                                        1980: '1980', 1990: '1990', 2000: '2000',  2010: '2010',
-                                        2020: '2020',},
-                                tooltip={"always_visible": True}, 
-                                id='year-range-slider'
-                                ),
             ],
             className="row pretty_container",
         ),
@@ -486,10 +488,12 @@ app.layout =  html.Div([
         # Schooling Section
         html.Div(
             [
-                html.H6("School Information", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
+                html.H6("School Information of the Laureates", style={"margin-top": "0","font-weight": "bold","text-align": "center"}),
                 html.Div(
                     [
-                    html.P("Top 10 Universities in the World", style={"font-weight": "bold", "text-align": "left"}),
+                    html.P("Top 10 Universities in the World", 
+                            style={"font-weight": "bold", "text-align": "left", "margin-left": 70}),
+
                     html.Div([dcc.Graph(id="fig_bar_uni", figure=fig_bar_uni)], className="pretty_container"),
                     html.Div(style={'margin-top': 30}),
                     html.Div([
@@ -497,17 +501,18 @@ app.layout =  html.Div([
                                     id='radio_science',
                                     options=[x for x in science_options],
                                     value=default_science,
-                                    labelStyle={'display': 'inline',}    
+                                    labelStyle={"display": "inline"}    
                                 ),
                         ],
                         style={"text-align": "center"},
                     ),
-                    html.Div(style={'margin-top': 30}),
+                    html.Div(style={"margin-top": 30}),
                     ],className="bare_container eleven columns"),
 
 
-                html.P("The Flow of Laureates to the USA Schools", 
-                        style={"font-weight": "bold", "text-align": "left"}, className="bare_container columns"), 
+                html.P("The Flow of Laureates to the US-based Schools", className="bare_container columns",
+                       style={"font-weight": "bold", "text-align": "left", "margin-left": 100}), 
+
                 html.Div([html.Img(id="circle_US", 
                                   style={'position':'relative','width':'100%','background-color':'#ffffff'}
                                   )],
@@ -515,14 +520,15 @@ app.layout =  html.Div([
 
                 html.Div([
                     html.Div(style={'margin-top': 20}),
-                    html.P("Insights on geographical distribution:", style={"font-weight":"bold"}),
+                    html.P("Insights on Geographical Distribution:", style={"font-weight":"bold"}),
                     html.P(),
-                    html.P("- Individuals who were born in the USA become the Nobel Prize Laureates more often than those who were born in other countries."),
+                    html.P("- Individuals who were born in the USA become the Nobel Prize Laureates more often than those who were born in other countries. \
+                              (The exact total figures and figures for each nominated category, can be explored using the map above)."),
                     html.P(),
-                    html.P("- The top performing universities in terms of the Nobel Prize are also based in the USA. It is true throughout all the scientific categories of the Award: Physics, Chemistry, Medicine, and Economics."),
+                    html.P("- The top performing universities in terms of winning the Nobel Prize for their research are also based in the USA. It is true throughout all the scientific categories of the Award: Physics, Chemistry, Medicine, and Economics."),
                     html.P(),
-                    html.P("- The circular graph to the right outlines the proportion of individual Laureates who were born in other countries and received their Nobel Prize Award while schooling in the United States.\
-                            As can be seen, there is a fair fraction of reserchers whose home country is not the US, but they have done their discoveries in American institutions."),
+                    html.P("- The circular graph to the right outlines the proportion of individual Laureates who were born in different countries and received their Nobel Prize Award while schooling in the United States.\
+                            As can be seen, there is a fair fraction of reserchers whose home country is not the USA, but they have done their discoveries in American institutions."),
                     ], className ="sixish columns"),
             ],
             className="row pretty_container",
