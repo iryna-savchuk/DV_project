@@ -9,7 +9,8 @@
 
 **Deployments:**
 - Railway.app: [https://nobel-prize.up.railway.app](https://nobel-prize.up.railway.app)
-- Render.com: [https://nobel-prize.onrender.com](https://nobel-prize.onrender.com) (*can be slow)
+- Render.com in the US: [https://nobelprize.onrender.com](https://nobelprize.onrender.com)
+- Render.com in the EU: [https://nobel-prize.onrender.com](https://nobel-prize.onrender.com) (*can be slow)
 
 ## Project Details
 ### Task Description 
