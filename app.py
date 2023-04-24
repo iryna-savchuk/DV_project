@@ -512,10 +512,14 @@ app.layout =  html.Div([
                 html.P("The Flow of Laureates to the US-based Schools", className="bare_container columns",
                        style={"font-weight": "bold", "text-align": "left", "margin-left": 100}), 
 
-                html.Div([html.Img(id="circle_US", 
-                                  style={'position':'relative','width':'100%','background-color':'#ffffff'}
-                                  )],
-                        className="pretty_container four columns"),
+                html.Div(id="circle_US",   
+                        style={
+                                'width': '50%',  # set the width of the Div
+                                'padding-bottom': '50%',  # set the height of the Div to be the same as the width (i.e., 1:1 aspect ratio)
+                                'position': 'relative'  # set position to relative so that the child elements can be positioned absolutely
+                            },
+                        className="pretty_container five columns", 
+                        ),
 
                 html.Div([
                     html.Div(style={'margin-top': 20}),
@@ -528,7 +532,7 @@ app.layout =  html.Div([
                     html.P(),
                     html.P("- The circular graph to the right outlines the proportion of individual Laureates who were born in different countries and received their Nobel Prize Award while schooling in the United States.\
                             As can be seen, there is a fair fraction of reserchers whose home country is not the USA, but they have done their discoveries in American institutions."),
-                    ], className ="sixish columns"),
+                    ], className ="bare_container four columns"),
             ],
             className="row pretty_container",
         ),
@@ -709,7 +713,7 @@ def update_colorpleth(radiovalue, radiovalue2, slidervalue):
 ############################## 4. Universities Section Callback #####################################
 @app.callback(
     Output('fig_bar_uni','figure'),
-    Output('circle_US', 'src'),
+    Output('circle_US', 'children'),
     Input('radio_science','value')
 )
 def get_top_uni(chosen_science):
@@ -753,8 +757,50 @@ def get_top_uni(chosen_science):
     fig_bar_uni.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 
     file_name_US = chosen_science+'_US_.png'
+    full_path = 'assets/{}'.format(file_name_US)
+
+    # Creating a trace for the image
+    image_trace = go.layout.Image(
+        source=full_path,
+        xref="x",
+        yref="y",
+        x=0,
+        y=0,
+        sizex=1,
+        sizey=1,
+        #sizing="stretch",
+        opacity=1,
+        layer="above"
+    )
+
+    # Creating a plot with the image trace
+    fig_us = go.Figure()
+
+    fig_us.update_layout(
+        #width=100,
+        #height=100,
+        autosize=True,  # automatically adjust the size of the plot
+        margin=dict(l=0, r=0, t=0, b=0),
+        template='plotly_white',
+        xaxis=dict(
+            range=[0, 1], # set the x-axis range
+            autorange=False, # disable auto-ranging for the x-axis
+            showticklabels=False, # hide the x-axis tick labels
+            showgrid=False # hide the x-axis grid
+            ),
+        yaxis=dict(
+            range=[-1, 0], # set the y-axis range
+            autorange=False, # disable auto-ranging for the y-axis
+            showticklabels=False, # hide the y-axis tick labels
+            showgrid=False # hide the y-axis grid
+            ),
+        images=[image_trace], # add image trace to layout
+    )
     
-    return fig_bar_uni, app.get_asset_url(file_name_US)
+    graph_style = {'position': 'absolute', 'top': 0, 'left': 0,
+                    'width': '100%', 'height': '100%'}
+
+    return fig_bar_uni, dcc.Graph(figure=fig_us, config={'displayModeBar': False}, style=graph_style) 
 
 
 ######################
