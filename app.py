@@ -752,7 +752,7 @@ def get_top_uni(chosen_science):
     fig_bar_uni = go.Figure(data=[data_bar_uni], layout=layout_bar_uni)
     fig_bar_uni.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 
-    file_name_US = chosen_science+'_US.png'
+    file_name_US = chosen_science+'_US_.png'
     
     return fig_bar_uni, app.get_asset_url(file_name_US)
 
