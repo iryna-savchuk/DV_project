@@ -8,9 +8,9 @@
 - Cátia Sofia Pereira Parrinha (20201320)
 
 **Deployments:**
-- Railway.app: [https://nobel-prize.up.railway.app](https://nobel-prize.up.railway.app)
-- Render.com in the US: [https://nobelprize.onrender.com](https://nobelprize.onrender.com)
-- Render.com in the EU: [https://nobel-prize.onrender.com](https://nobel-prize.onrender.com) (*can be slow)
+- Railway.app: [https://nobel-prize.up.railway.app](https://nobelprize.up.railway.app/) 
+- Render.com in the US: [https://nobelprize.onrender.com](https://nobelprize.onrender.com) (*way too slow)
+- Render.com in the EU: [https://nobel-prize.onrender.com](https://nobel-prize.onrender.com) (*way too slow)
 
 ## Project Details
 ### Task Description 
