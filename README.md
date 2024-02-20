@@ -8,7 +8,7 @@
 - Cátia Parrinha (20201320)
 
 **Deployments:**
-- Railway.app: [https://nobelprize.up.railway.app](https://nobelprize.up.railway.app/) 
+- Railway.app: [https://nobelprize.up.railway.app](https://nobelprize.up.railway.app/) and [https://nobel-prize.up.railway.app](https://nobel-prize.up.railway.app/) 
 - Render.com in the US: [https://nobelprize.onrender.com](https://nobelprize.onrender.com) (*might be  slow)
 - Render.com in the EU: [https://nobel-prize.onrender.com](https://nobel-prize.onrender.com) (*might be slow)
 
